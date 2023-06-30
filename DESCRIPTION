@@ -4,7 +4,7 @@ Version: 0.0.0.9000
 Authors@R: 
     person("Thomas", "Bøjer Rasmussen", , "thomasboejer@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-0120-1712"))
-Description:  Creates descriptive summaries of datasets. The main focus is to
+Description: Creates descriptive summaries of datasets. The main focus is to
   provide functionality that automatically mask person-sensitive data, a 
   non-trivial task that should be done programmatically. In contrast to other
   packages, eg the excellent `gtsummary` package, this package does not aim
@@ -13,9 +13,7 @@ Description:  Creates descriptive summaries of datasets. The main focus is to
   summarization. The summarized data is returned as a simple data.table and the
   user can then prettify the table themselves using eg the `gt` or `flextable`
   packages.
-  
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
