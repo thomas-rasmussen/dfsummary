@@ -11,9 +11,12 @@ Description: Creates descriptive summaries of datasets. The main focus is to
   to provide presentation-ready tables, but instead focuses on keeping things
   simple by relying only on the `data.table` package for efficient 
   summarization. The summarized data is returned as a simple data.table and the
-  user can then prettify the table themselves using eg the `gt` or `flextable`
-  packages.
+  user can then finalize the table themselves using eg the `gt` or `flextable`
+  package.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
