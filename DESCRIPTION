@@ -22,7 +22,7 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
-URL: https://github.com/thomas-rasmussen/dfsummary
+URL: https://github.com/thomas-rasmussen/dfsummary, https://thomas-rasmussen.github.io/dfsummary/
 BugReports: https://github.com/thomas-rasmussen/dfsummary/issues
 Imports: 
     data.table
