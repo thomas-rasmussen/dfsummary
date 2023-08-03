@@ -3,7 +3,7 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   dfsummary: dfsummary.html
-last_built: 2023-08-03T10:12Z
+last_built: 2023-08-03T10:35Z
 urls:
   reference: https://thomas-rasmussen.github.io/dfsummary/reference
   article: https://thomas-rasmussen.github.io/dfsummary/articles
