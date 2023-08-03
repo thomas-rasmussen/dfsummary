@@ -127,9 +127,21 @@ test_that(".wsum() handles NA values as intended", {
   expect_equal(.wsum(c(1, NA, 1), c(3, NA, NA), na.rm = TRUE), 3)
 })
 
-test_that(" .wsum() throws an error if invalid input is given", {
+test_that(".wsum() throws an error if invalid input is given", {
   expect_error(.wsum(x = 1:9, w = 1:8))
   expect_error(.wsum(1:10, na.rm = 1))
   expect_error(.wsum(NULL))
 })
 
+
+#### .validate_tblsummary ####
+
+test_that(".validate_tblsummary() throws error if object is nost a tblsummary", {
+  expect_error(.validate_tblsummary(data.frame()))
+})
+
+test_that(".validate_tblsummary() does not throw error if object is a tblsummary", {
+  x <- data.frame(var = 1:10)
+  tbl <- .summarize_var(x, var = "var")
+  expect_error(.validate_tblsummary(tbl), NA)
+})

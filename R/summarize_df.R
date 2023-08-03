@@ -1,7 +1,7 @@
-  # Quiet R CMD check notes of the type "no visible binding for global variable..."
-  utils::globalVariables(c(
-    ".", ".var", ".weight", ".by", ".var_level", ".var_name", ".n_var_level"
-  ))
+# Quiet R CMD check notes of the type "no visible binding for global variable..."
+utils::globalVariables(c(
+  ".", ".var", ".weight", ".by", ".var_level", ".var_name", ".n_var_level"
+))
 
 
 #' Summarize variables in a data.frame
