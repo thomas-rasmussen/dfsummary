@@ -18,4 +18,43 @@ knitr::opts_chunk$set(
 library(dfsummary)
 ```
 
-TODO: Make the vignette once the functionality of the package is more mature.
+# Introduction
+
+Creating descriptive summaries of variables in data.frames are a common task. In
+the context of summarizing patient characteristics of a population, individual
+level data is often person-sensitive and proper precautions have to be made to
+be sure that the summarized data can not be used to identify data on individuals.
+The main aim of **dfsummary** is to provide functions for summarizing data and
+automatically mask any descriptive summary statistics that are deemed
+person-sensitive. A secondary aim of **dfsummary** is to keep things simple:
+the package depends only on **data.table**, which only depends on R itself. Also,
+the output is a simple data.table. As a consequence, the focus is *not* to
+make publication-ready tables; it is up to the user to finalize the tables. That
+being said, the output is formatted to facilitate use of other packages like
+**gt** and **flextable** to finalize the tables for publication, and we show
+examples of how we imagine one could do so.
+
+# Summarize a data.frame
+
+To illustrate how the package can summarize a data.frame, we will use the infert
+dataset from the **datasets** package.
+
+```{r}
+
+dt <- tbl_summary(
+  infert,
+  vars = c("age", "parity"),
+  types = c(parity = "cat"),
+  by = "case",
+)
+```
+
+# Illustrate masking
+
+Run same code, but now with masking. Explain what was masked and why.
+
+
+# Finalize table for publication using **gt**
+
+# Finalize table for publication using **flextable**
+
