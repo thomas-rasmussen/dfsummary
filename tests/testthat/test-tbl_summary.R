@@ -10,4 +10,14 @@ test_that("tbl_summary works", {
     var = c("var_cont", "var_bin", "var_cat"),
     type = c(var_cat = "cat")
   )
+
+  x <- data.frame(
+    var = rep(c(0,1), times = 50),
+    by = c(rep("A", 5), rep("B", 5), rep("C", 90))
+  )
+  dt <- tbl_summary(
+    x = x,
+    var = c("var"),
+    by = "by"
+  )
 })
