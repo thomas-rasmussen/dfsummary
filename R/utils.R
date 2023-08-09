@@ -1,46 +1,51 @@
-#' Checks if a vector is binary(-ish)
+#' Tests if an object is a binary vector.
 #'
-#' Check if each element of a vector can be interpreted as binary.
+#' Tests if an object is a vector of type "logical", or a numeric vector
+#' where each element is indistinguishable from zero or one.
 #'
-#' A vector element is deemed to be binary if it is of type "logical", or
-#' if it is a numeric value that is indistinguishable from zero or one based
-#' on a tolerence given in `tol`.
+#' If `x` is a factor then FALSE is returned. Any presence of NA's will
+#' also result in FALSE being returned.
 #'
-#' @param x  A numeric or logical vector
-#' @param tol Numeric value. Tolerance.
-#' @param allow_na A logical. Should NA values in `x` be accepted as binary?
+#' @param x  Object to test.
+#' @param tol A numeric value. Tolerance used to determine if numerical value
+#'   is indistinguishable from zero or one.
 #'
-#' @return A logical
+#' @return A logical.
 #' @keywords internal
 #'
 #' @examples
 #' \dontrun{
-#'   .is_binary(c(1,0,1))
+#'   .is_binary(c(1,0))
 #' }
 .is_binary <- function(x,
-                       tol = .Machine$double.eps^0.5,
-                       allow_na = FALSE) {
+                       tol = .Machine$double.eps^0.5) {
 
-  if (!(is.vector(x) || is.null(x))) {
-    stop("`x` is not a vector or NULL", call. = FALSE)
-  }
   if (!is.numeric(tol)) {
-    stop("`tol` is not a numeric value", call. = FALSE)
+    stop(paste0(
+      "`tol` must be numeric value. ",
+      '`tol` has class "', class(tol), '".'
+      )
+      ,call. = FALSE
+    )
   }
-  if (!is.logical(allow_na)) {
-    stop ("`na.rm` is not a logical", call. = FALSE)
+  if(length(tol) != 1L) {
+    stop(paste0(
+      "`tol` must have length 1. ",
+      "`tol` has length ", length(tol), "."
+      )
+      , call. = FALSE
+    )
   }
 
-  return_val <- FALSE
-  if(is.numeric(x) || is.logical(x)) {
-    return_val <- all(abs(x - 0L) < tol | abs(x - 1L) < tol, na.rm = allow_na)
-    # If return_val is NA at this point, this always means that `x` is not
-    # binary, regardless of the value of `allow_na`.
-    if (is.na(return_val)) {
-      return_val <- FALSE
-    }
+  if (!(is.numeric(x) || is.logical(x))) {
+    return(FALSE)
+  } else if (any(is.na(x))) {
+    return(FALSE)
+  } else if (!all(abs(x - 0L) < tol | abs(x - 1L) < tol)) {
+    return(FALSE)
+  } else {
+    return(TRUE)
   }
-  return_val
 }
 
 #' Check input for internal functions

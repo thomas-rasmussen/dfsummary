@@ -2,31 +2,30 @@
 % Please edit documentation in R/utils.R
 \name{.is_binary}
 \alias{.is_binary}
-\title{Checks if a vector is binary(-ish)}
+\title{Tests if an object is a binary vector.}
 \usage{
-.is_binary(x, tol = .Machine$double.eps^0.5, allow_na = FALSE)
+.is_binary(x, tol = .Machine$double.eps^0.5)
 }
 \arguments{
-\item{x}{A numeric or logical vector}
+\item{x}{Object to test.}
 
-\item{tol}{Numeric value. Tolerance.}
-
-\item{allow_na}{A logical. Should NA values in \code{x} be accepted as binary?}
+\item{tol}{A numeric value. Tolerance used to determine if numerical value
+is indistinguishable from zero or one.}
 }
 \value{
-A logical
+A logical.
 }
 \description{
-Check if each element of a vector can be interpreted as binary.
+Tests if an object is a vector of type "logical", or a numeric vector
+where each element is indistinguishable from zero or one.
 }
 \details{
-A vector element is deemed to be binary if it is of type "logical", or
-if it is a numeric value that is indistinguishable from zero or one based
-on a tolerence given in \code{tol}.
+If \code{x} is a factor then FALSE is returned. Any presence of NA's will
+also result in FALSE being returned.
 }
 \examples{
 \dontrun{
-  .is_binary(c(1,0,1))
+  .is_binary(c(1,0))
 }
 }
 \keyword{internal}

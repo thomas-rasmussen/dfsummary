@@ -1,47 +1,41 @@
-
 #### .is_binary ####
-test_that(".is_binary() returns TRUE if input is binary-ish", {
-  expect_equal(.is_binary(0L), TRUE)
-  expect_equal(.is_binary(1), TRUE)
-  expect_equal(.is_binary(FALSE), TRUE)
-  expect_equal(.is_binary(c(0L, 1L)), TRUE)
-  expect_equal(.is_binary(c(1, 0.0)), TRUE)
-  expect_equal(.is_binary(c(TRUE, FALSE)), TRUE)
+
+test_that(".is_binary() returns TRUE if input is binary vector", {
+  expect_true(.is_binary(0L))
+  expect_true(.is_binary(1))
+  expect_true(.is_binary(FALSE))
+  expect_true(.is_binary(c(0L, 1L)))
+  expect_true(.is_binary(c(1, 0.0)))
+  expect_true(.is_binary(c(TRUE, FALSE)))
 })
 
-test_that(".is_binary() returns FALSE if input is not binary-ish", {
-  expect_equal(.is_binary(0.1), FALSE)
-  expect_equal(.is_binary("0"), FALSE)
-  expect_equal(.is_binary(c(0, 0.1)), FALSE)
-  expect_equal(.is_binary(list(1)), FALSE)
+test_that(".is_binary() returns FALSE if input is not binary vector", {
+  expect_false(.is_binary(0.1))
+  expect_false(.is_binary(c(0, 0.1)))
+  expect_false(.is_binary(as.factor(1)))
+  expect_false(.is_binary(list()))
+  expect_false(.is_binary(NULL))
 })
 
-test_that(".is_binary() correctly handles NA values", {
-  expect_equal(.is_binary(NA), FALSE)
-  expect_equal(.is_binary(c(1, NA)), FALSE)
-  expect_equal(.is_binary(NA, allow_na = TRUE), TRUE)
-  expect_equal(.is_binary(c(1, NA), allow_na = TRUE), TRUE)
-  expect_equal(.is_binary(c(1, NA, 1.2), allow_na = TRUE), FALSE)
+test_that(".is_binary() returns FALSE if NA's present.", {
+  expect_false(.is_binary(NA))
+  expect_false(.is_binary(c(1, NA)))
 })
 
-test_that(".is_binary(NULL) returns FALSE", {
-  expect_equal(.is_binary(NULL), FALSE)
+test_that(".is_binary() signals an error if invalid input is given", {
+  expect_error(.is_binary())
+  expect_error(.is_binary(1, tol = TRUE))
+  expect_error(.is_binary(1, tol = c(1, 1)))
 })
 
-test_that(".is_binary() throws an error if invalid input is given", {
-  expect_error(.is_binary(data.frame()))
-  expect_error(.is_binary(1, tol = NULL))
-  expect_error(.is_binary(1, allow_na = 1))
+test_that(".is_binary() `tol` argument works as intended", {
+  expect_false(.is_binary(1.1, tol = 0.1))
+  expect_true(.is_binary(1.1, tol = 0.2))
 })
 
-test_that(".is_binary() is not too inefficient", {
-  skip("Performance tests. Only run manually")
-  n_obs <- 1e7
-  x <- sample(c(0,1), size = n_obs, replace = TRUE)
-  .is_binary(x)
-})
 
 #### .w_inputcheck ####
+
 test_that(".winputcheck() works as intended", {
   expect_equal(.w_inputcheck(x = 1:5, w = 1:5, na.rm = TRUE), NULL)
   expect_equal(.w_inputcheck(x = 1:5, w = NULL, na.rm = TRUE), NULL)
