@@ -9,10 +9,11 @@
 \arguments{
 \item{x}{A numeric or logical vector.}
 
-\item{w}{A numeric vector of non-negative numbers. Weights associated with \code{x}.}
+\item{w}{A numeric vector of non-negative numbers. Weights associated with
+\code{x}. Default is NULL, ie no weights are used.}
 
-\item{na.rm}{Boolean. Should NA values in \code{x} and values in \code{x} with
-NA weights in \code{w} be removed?}
+\item{na.rm}{A logical value. Should missing values (including NaN) in \code{x}
+be removed?}
 }
 \value{
 A numeric.
@@ -23,9 +24,7 @@ weights \code{w}.
 }
 \examples{
 \dontrun{
-   x <- 1:5
-   w <- rep(2, 5)
-   .wsum(x, w)
+   .wsum(x = 1:2, w = rep(2, 2))
 }
 }
 \keyword{internal}

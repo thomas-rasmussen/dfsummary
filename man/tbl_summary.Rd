@@ -4,21 +4,12 @@
 \alias{tbl_summary}
 \title{Summarize variables}
 \usage{
-tbl_summary(
-  x,
-  vars,
-  types = NULL,
-  weight = NULL,
-  by = NULL,
-  by_total_val = ".all"
-)
+tbl_summary(x, vars, weight = NULL, by = NULL, by_total_val = ".all")
 }
 \arguments{
 \item{x}{a}
 
 \item{vars}{a}
-
-\item{types}{a}
 
 \item{weight}{a}
 

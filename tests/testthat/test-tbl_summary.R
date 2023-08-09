@@ -7,8 +7,7 @@ test_that("tbl_summary works", {
 
   dt <- tbl_summary(
     x = x,
-    var = c("var_cont", "var_bin", "var_cat"),
-    type = c(var_cat = "cat")
+    vars = c("var_cont", "var_bin", cat = "var_cat"),
   )
 
   x <- data.frame(
@@ -17,7 +16,7 @@ test_that("tbl_summary works", {
   )
   dt <- tbl_summary(
     x = x,
-    var = c("var"),
+    vars = c("var"),
     by = "by"
   )
 })

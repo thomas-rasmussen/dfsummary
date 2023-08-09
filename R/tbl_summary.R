@@ -8,7 +8,6 @@ utils::globalVariables(c(
 #'
 #' @param x a
 #' @param vars a
-#' @param types a
 #' @param weight a
 #' @param by a
 #' @param by_total_val a
@@ -22,7 +21,6 @@ utils::globalVariables(c(
 #' }
 tbl_summary <- function(x,
                         vars,
-                        types = NULL,
                         weight = NULL,
                         by = NULL,
                         by_total_val = ".all"
@@ -36,7 +34,6 @@ tbl_summary <- function(x,
   dt <- summarize_df(
     x,
     vars = vars,
-    types = types,
     weight = weight,
     by = by,
     by_total_val = by_total_val

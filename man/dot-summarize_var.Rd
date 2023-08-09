@@ -2,7 +2,7 @@
 % Please edit documentation in R/summarize_df.R
 \name{.summarize_var}
 \alias{.summarize_var}
-\title{Summarize variable}
+\title{Summarizes a variable}
 \usage{
 .summarize_var(
   x,
@@ -20,12 +20,15 @@
 
 \item{type}{String. Variable type of \code{var}: "bin" (binary),
 "cont" (continuous), "cat" (categorical). Default is NULL, meaning that
-the type of \code{var} is automatically deduced from the data.}
+the type is automatically deduced from the data. See details for more
+information.}
 
-\item{weight}{String. Optional name of variable in \code{x} that contains
-observation weights. The weights must be non-negative numbers.}
+\item{weight}{String. Name of variable in \code{x} that contains
+observation weights. Must be a numeric variable, with non-negative
+numbers. Default is NULL, ie no weights are used.}
 
-\item{by}{String. Optional name of variable to summarize by.}
+\item{by}{String. Name of variable to group by while summarizing. Default is
+NULL, ie no grouping variable is used.}
 
 \item{by_total_val}{String. Name given to overall by-group.}
 }
@@ -33,7 +36,16 @@ observation weights. The weights must be non-negative numbers.}
 A data.table containing a descriptive summary of \code{var}.
 }
 \description{
-Returns a descriptive summary of a variable in a data.frame.
+Creates a descriptive summary of a variable in a data.frame.
+}
+\details{
+If \code{type} is NULL, the variable type of \code{var} will be deduced from the data:
+\enumerate{
+\item If the variable takes "binary" values, eg is a logical vector, or a numeric
+vector with zero and one's, the \code{type} is set to "bin".
+\item Else, if the variable is numeric then \code{type} is set to "cont".
+\item Else, \code{type} is set to "cat".
+}
 }
 \examples{
 \dontrun{

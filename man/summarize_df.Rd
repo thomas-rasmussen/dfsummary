@@ -2,32 +2,25 @@
 % Please edit documentation in R/summarize_df.R
 \name{summarize_df}
 \alias{summarize_df}
-\title{Summarize variables in a data.frame}
+\title{Summarizes variables in a data.frame}
 \usage{
-summarize_df(
-  x,
-  vars,
-  types = NULL,
-  weight = NULL,
-  by = NULL,
-  by_total_val = ".all"
-)
+summarize_df(x, vars, weight = NULL, by = NULL, by_total_val = ".all")
 }
 \arguments{
 \item{x}{Input data.frame.}
 
-\item{vars}{Character vector. Names of variables in \code{x} to summarize.}
+\item{vars}{Character vector. Names of variables in \code{x} to summarize.
+Variables types can be specified by naming elements of \code{var}. Variable
+types are: "bin" (binary), "cont" (continuous), "cat" (categorical).
+If ny variable type is specified, the type is automatically deduced from
+the data.}
 
-\item{types}{Optional named character vector. Variable types of variabls in
-\code{vars}: "bin" (binary), "cont" (continuous), "cat" (categorical). Default
-is NULL, meaning that the types of \code{vars} is automatically deduced from
-the data. Can be specified for only some variables, implicitly setting the
-type for the remaining variables to NULL.}
+\item{weight}{String. Name of variable in \code{x} that contains
+observation weights. Must be a numeric variable, with non-negative
+numbers. Default is NULL, ie no weights are used.}
 
-\item{weight}{String. Optional name of variable in \code{x} that contains
-observation weights. The weights must be non-negative numbers.}
-
-\item{by}{String. Optional name of variable to summarize by.}
+\item{by}{String. Name of variable to group by while summarizing. Default is
+NULL, ie no grouping variable is used.}
 
 \item{by_total_val}{String. Name given to overall by-group.}
 }
@@ -41,7 +34,6 @@ Returns a descriptive summary of variables in a data.frame.
 x <- data.frame(var1 = 1:10, var2 = c(rep("A", 5), rep("B", 5)))
 summarize_df(
   x,
-  vars = c("var1", "var2"),
-  types = c(var1 = "cont", var2 = "cat")
+  vars = c(cont = "var1", "var2")
 )
 }

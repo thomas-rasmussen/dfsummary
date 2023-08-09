@@ -4,24 +4,23 @@
 \alias{.is_binary}
 \title{Tests if an object is a binary vector.}
 \usage{
-.is_binary(x, tol = .Machine$double.eps^0.5)
+.is_binary(x, tol = .Machine$double.eps^0.5, allow_na = FALSE)
 }
 \arguments{
 \item{x}{Object to test.}
 
 \item{tol}{A numeric value. Tolerance used to determine if numerical value
 is indistinguishable from zero or one.}
+
+\item{allow_na}{A logical value. Allow NA values in binary vector?}
 }
 \value{
 A logical.
 }
 \description{
 Tests if an object is a vector of type "logical", or a numeric vector
-where each element is indistinguishable from zero or one.
-}
-\details{
-If \code{x} is a factor then FALSE is returned. Any presence of NA's will
-also result in FALSE being returned.
+where each element is indistinguishable from zero or one. If \code{x} is a factor
+then FALSE is returned.
 }
 \examples{
 \dontrun{

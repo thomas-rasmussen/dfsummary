@@ -43,9 +43,8 @@ dataset from the **datasets** package.
 
 dt <- tbl_summary(
   infert,
-  vars = c("age", "parity"),
-  types = c(parity = "cat"),
-  by = "case",
+  vars = c("age", cat = "parity"),
+  by = "case"
 )
 ```
 

@@ -4,15 +4,15 @@ utils::globalVariables(c(
 ))
 
 
-#' Summarize variables in a data.frame
+#' Summarizes variables in a data.frame
 #'
 #' Returns a descriptive summary of variables in a data.frame.
+#'
 #' @param vars Character vector. Names of variables in `x` to summarize.
-#' @param types Optional named character vector. Variable types of variabls in
-#'   `vars`: "bin" (binary), "cont" (continuous), "cat" (categorical). Default
-#'   is NULL, meaning that the types of `vars` is automatically deduced from
-#'   the data. Can be specified for only some variables, implicitly setting the
-#'   type for the remaining variables to NULL.
+#'   Variables types can be specified by naming elements of `var`. Variable
+#'   types are: "bin" (binary), "cont" (continuous), "cat" (categorical).
+#'   If ny variable type is specified, the type is automatically deduced from
+#'   the data.
 #' @inheritParams .summarize_var
 #'
 #' @return A data.table containing a descriptive summary of `vars`.
@@ -23,12 +23,10 @@ utils::globalVariables(c(
 #' x <- data.frame(var1 = 1:10, var2 = c(rep("A", 5), rep("B", 5)))
 #' summarize_df(
 #'   x,
-#'   vars = c("var1", "var2"),
-#'   types = c(var1 = "cont", var2 = "cat")
+#'   vars = c(cont = "var1", "var2")
 #' )
 summarize_df <- function(x,
                          vars,
-                         types = NULL,
                          weight = NULL,
                          by = NULL,
                          by_total_val = ".all") {
@@ -36,22 +34,38 @@ summarize_df <- function(x,
   ### Input checks ###
 
   if (!is.data.frame(x)) {
-    stop("'x' is not a data.frame", call. = FALSE)
+    stop(
+      paste0(
+        "`x` must be a data.frame. ",
+        '`x` has type "', typeof(x), '".'
+      )
+      , call. = FALSE
+    )
   }
   if (!is.character(vars)) {
-    stop("'vars' is not a character vector", call. = FALSE)
+    stop(
+      paste0(
+        "`vars` must be a character vector",
+        '`x` has type "', typeof(x), '".'
+      )
+      , call. = FALSE
+    )
   }
 
 
   ### Summarize data ###
 
+  types <- names(vars)
+  if (is.null(types)) {
+    types <- rep("", length(vars))
+  }
+  vars <- as.character(vars)
+
   for (i in seq_along(vars)) {
     i_var <- vars[i]
-    if (i_var %in% names(types)) {
-      i_type <- types[i_var]
-    } else {
-      i_type <- NULL
-    }
+    i_type <- types[i]
+    if (i_type == "") i_type <- NULL
+
     tmp <- .summarize_var(
       x = x,
       var = i_var,
@@ -75,19 +89,80 @@ summarize_df <- function(x,
 
 #### Helpers ####
 
-#' Summarize variable
+#' Checks if variable exists in data.frame.
 #'
-#' Returns a descriptive summary of a variable in a data.frame.
+#' Checks that a given variable name is a variable name in input data.frame.
 #'
+#' @param x. Input data.frame.
+#' @param var String. Variable name.
+#'
+#' @returns invisible(NULL) or an error if an input argument is invalid.
+#' @keywords internal
+#'
+#' @examples
+#' \dontrun{
+#'   x <- data.frame(var1 = 1:2)
+#'   .is_var_name(x, "var1")
+#' }
+.is_var_name <- function(x, var) {
+  if (!is.data.frame(x)) {
+    stop(
+      paste0(
+        "`x` must be a data.frame. ",
+        '`x` has type "', typeof(x), '".'
+      )
+      , call. = FALSE
+    )
+  } else if (!is.character(var)) {
+    stop(
+      paste0(
+        "`var` must be a string. ",
+        '`var` has type "', typeof(var), '".'
+      )
+      , call. = FALSE
+    )
+  } else if (length(var) != 1L) {
+    stop(
+      paste0(
+        "`var` must have length 1. ",
+        "`var` has length ", length(var), "."
+      )
+      , call. = FALSE
+    )
+  } else if (!var %in% names(x)) {
+    stop(
+      paste0(
+        "`var` must be the name of a variabe in `x`. ",
+        '"', var, '" is not a variable name in `x`.'
+      )
+      , call. = FALSE
+    )
+  }
+
+  invisible(NULL)
+}
+
+#' Summarizes a variable
+#'
+#' Creates a descriptive summary of a variable in a data.frame.
+#'
+#' If `type` is NULL, the variable type of `var` will be deduced from the data:
+#' 1) If the variable takes "binary" values, eg is a logical vector, or a numeric
+#'    vector with zero and one's, the `type` is set to "bin".
+#' 2) Else, if the variable is numeric then `type` is set to "cont".
+#' 3) Else, `type` is set to "cat".
 #'
 #' @param x Input data.frame.
 #' @param var String. Name of variable in `x` to summarize.
 #' @param type String. Variable type of `var`: "bin" (binary),
 #'   "cont" (continuous), "cat" (categorical). Default is NULL, meaning that
-#'   the type of `var` is automatically deduced from the data.
-#' @param weight String. Optional name of variable in `x` that contains
-#'   observation weights. The weights must be non-negative numbers.
-#' @param by String. Optional name of variable to summarize by.
+#'   the type is automatically deduced from the data. See details for more
+#'   information.
+#' @param weight String. Name of variable in `x` that contains
+#'   observation weights. Must be a numeric variable, with non-negative
+#'   numbers. Default is NULL, ie no weights are used.
+#' @param by String. Name of variable to group by while summarizing. Default is
+#' NULL, ie no grouping variable is used.
 #' @param by_total_val String. Name given to overall by-group.
 #'
 #' @return A data.table containing a descriptive summary of `var`.
@@ -108,43 +183,82 @@ summarize_df <- function(x,
 
   ### Input checks ###
 
-  # 'x'
+  # `x`
   if (!is.data.frame(x)) {
-    stop("'x' is not a data.frame", call. = FALSE)
+    stop(
+      paste0(
+        "`x` must be a data.frame. ",
+        '`x` has type "', typeof(x), '".'
+      )
+      , call. = FALSE
+    )
   }
-  # 'var'
-  if (!(is.character(var) && length(var) == 1L)) {
-    stop("'var' is not a string", call. = FALSE)
+  # `var`
+  .is_var_name(x, var)
+  # `type`
+  if (is.null(type)) {
+  } else if (!is.character(type)) {
+    stop(
+      paste0(
+        "`type` is not a string. ",
+        '`type` has type "', typeof(type), '".'
+      )
+      , call. = FALSE
+    )
+  } else if (length(type) != 1L) {
+    stop(
+      paste0(
+        "`type` must have length 1. ",
+        "`type` has length ", length(type), "."
+      )
+      , call. = FALSE
+    )
+  } else if (!type %in% c("bin", "cat", "cont")) {
+    stop(
+      paste0(
+        "`type` does not have a valid value. ",
+        '`type` must have one of the following values: "bin", "cat", "cont". ',
+        '`type` has value "', type, '".'
+      )
+      , call. = FALSE
+    )
   }
-  if (!var %in% names(x)) {
-    stop(paste0("'var' is not a variable in 'x'", call. = FALSE))
+  # `weight`
+  if (is.null(weight)) {
+  } else {
+    .is_var_name(x, weight)
+    if (any(x[[weight]] < 0)) {
+      stop(
+        paste0(
+          "`weight` must be a numeric vector with non-negative elements. ",
+          "`weight` has one or more elements < 0"
+        )
+        , call. = FALSE
+      )
+    }
   }
-  # 'type'
-  if (!is.null(type) && !(is.character(type) && length(type) == 1L)) {
-    stop("'type' is not a string", call. = FALSE)
+  # `by`
+  if (!is.null(by)) {
+    .is_var_name(x, by)
   }
-  if (!is.null(type) && !type %in% c("bin", "cat", "cont")) {
-    stop("'type' does not have a valid value", call. = FALSE)
+  # `by_total_val`
+  if (!is.character(by_total_val)) {
+    stop(
+      paste0(
+        "`by_total_val` must be a string. ",
+        '`by_total_val` has type "', typeof(by_total_val), '".'
+      )
+      , call. = FALSE
+    )
+  } else if (length(by_total_val) != 1L) {
+    stop(
+      paste0(
+        "`by_total_val` must have length 1. ",
+        "`by_total_val` has length ", length(by_total_val), "."
+      )
+      , call. = FALSE
+    )
   }
-  # 'weight'
-  if (!is.null(weight) && !(is.character(weight) && length(weight) == 1L)) {
-    stop("'weight' is not a string", call. = FALSE)
-  }
-  if (!is.null(weight) && !weight %in% names(x)) {
-    stop(paste0("'weight' is not a variable in 'x'", call. = FALSE))
-  }
-  # 'by'
-  if (!is.null(by) && !(is.character(by) && length(by) == 1L)) {
-    stop("'by' is not a string", call. = FALSE)
-  }
-  if(!is.null(by) && !by %in% names(x)) {
-    stop(paste0("'", by, "' is not a variable in 'x'"), call. = FALSE)
-  }
-  # 'by_total_val'
-  if (!(is.character(by_total_val) && length(by_total_val) == 1L)) {
-    stop("'by_total_val' is not a string", call. = FALSE)
-  }
-
 
   ### Process input ###
 
@@ -168,9 +282,22 @@ summarize_df <- function(x,
   # If type is given, check that it is compatible with '.var'
   if (!is.null(type)) {
     if (type == "bin" && !.is_binary(dt$.var)) {
-      stop("'var' is not compatible with 'type' == bin", call. = FALSE)
-    } else if (type == "cont" & !(is.numeric(dt$.var) & !is.factor(dt$.var))) {
-      stop("'var' is not compatible with 'type' == cont", call. = FALSE)
+      stop(
+        paste0(
+          '`var` must be compatible with `type` = "bin". ',
+          "`var` is not a logical vector, or a numeric vector with zero and ",
+          "one values."
+        )
+        , call. = FALSE
+      )
+    } else if (type == "cont" && !is.numeric(dt$.var)) {
+      stop(
+        paste0(
+          '`var` is not compatible with `type` = "cont". ',
+          "`var` is not a numeric vector."
+        )
+        , call. = FALSE
+      )
     }
   }
 
@@ -178,7 +305,7 @@ summarize_df <- function(x,
   if (is.null(type)) {
     type <- fcase(
       .is_binary(dt$.var), "bin",
-      is.numeric(dt$.var) & !is.factor(dt$.var), "cont",
+      is.numeric(dt$.var), "cont",
       default = "cat"
     )
   }
