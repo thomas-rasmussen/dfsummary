@@ -4,7 +4,14 @@
 \alias{tbl_summary}
 \title{Summarize variables}
 \usage{
-tbl_summary(x, vars, weight = NULL, by = NULL, by_total_val = ".all")
+tbl_summary(
+  x,
+  vars,
+  weight = NULL,
+  by = NULL,
+  by_total_val = ".all",
+  mask = FALSE
+)
 }
 \arguments{
 \item{x}{a}
@@ -16,6 +23,8 @@ tbl_summary(x, vars, weight = NULL, by = NULL, by_total_val = ".all")
 \item{by}{a}
 
 \item{by_total_val}{a}
+
+\item{mask}{A logical value. Mask person-sensitive aggregated counts?}
 }
 \value{
 data.table

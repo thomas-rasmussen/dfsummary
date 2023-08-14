@@ -11,6 +11,7 @@ utils::globalVariables(c(
 #' @param weight a
 #' @param by a
 #' @param by_total_val a
+#' @param mask A logical value. Mask person-sensitive aggregated counts?
 #'
 #' @return data.table
 #' @export
@@ -23,7 +24,8 @@ tbl_summary <- function(x,
                         vars,
                         weight = NULL,
                         by = NULL,
-                        by_total_val = ".all"
+                        by_total_val = ".all",
+                        mask = FALSE
                         ) {
 
   ### Input checks ###
@@ -40,7 +42,11 @@ tbl_summary <- function(x,
   )
 
   ### Add masking indicators ###
-  dt <- mask_tbl(dt)
+  if (mask) {
+    dt <- mask_tbl(dt)
+  } else {
+    dt[, `:=`(.mask_var_level = 0L, .mask_by_level = 0L)]
+  }
 
   ### Calculate stats ###
 
@@ -73,11 +79,19 @@ tbl_summary <- function(x,
 
   dt <- dt[
     , .(.by, .var_name, .var_type, .n_by_level, .var_level,
-        .stat_label, .stat_value, .mask)
+        .stat_label, .stat_value, .mask_by_level, .mask_var_level)
   ]
 
   ### Mask person-sensitive statistics ###
-  dt[, .stat_value := fifelse(.mask == 1L, "*", .stat_value)][, .mask := NULL]
+  dt[
+    , .stat_value := fifelse(
+        .mask_by_level == 1L | .mask_var_level == 1L,
+        "*",
+        .stat_value
+      )
+    ][
+    , `:=`(.mask_by_level = NULL, .mask_var_level = NULL)
+  ]
 
 
   ### Restructure ###
