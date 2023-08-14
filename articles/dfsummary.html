@@ -79,9 +79,55 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/thomas-rasmussen/dfsummary" class="external-link">dfsummary</a></span><span class="op">)</span></span></code></pre></div>
-<p>TODO: Make the vignette once the functionality of the package is more
-mature.</p>
-  </main>
+<div class="section level2">
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+</h2>
+<p>Creating descriptive summaries of variables in data.frames are a
+common task. In the context of summarizing patient characteristics of a
+population, individual level data is often person-sensitive and proper
+precautions have to be made to be sure that the summarized data can not
+be used to identify data on individuals. The main aim of
+<strong>dfsummary</strong> is to provide functions for summarizing data
+and automatically mask any descriptive summary statistics that are
+deemed person-sensitive. A secondary aim of <strong>dfsummary</strong>
+is to keep things simple: the package depends only on
+<strong>data.table</strong>, which only depends on R itself. Also, the
+output is a simple data.table. As a consequence, the focus is
+<em>not</em> to make publication-ready tables; it is up to the user to
+finalize the tables. That being said, the output is formatted to
+facilitate use of other packages like <strong>gt</strong> and
+<strong>flextable</strong> to finalize the tables for publication, and
+we show examples of how we imagine one could do so.</p>
+</div>
+<div class="section level2">
+<h2 id="summarize-a-data-frame">Summarize a data.frame<a class="anchor" aria-label="anchor" href="#summarize-a-data-frame"></a>
+</h2>
+<p>To illustrate how the package can summarize a data.frame, we will use
+the infert dataset from the <strong>datasets</strong> package.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="va">dt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/tbl_summary.html">tbl_summary</a></span><span class="op">(</span></span>
+<span>  <span class="va">infert</span>,</span>
+<span>  vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, cat <span class="op">=</span> <span class="st">"parity"</span><span class="op">)</span>,</span>
+<span>  by <span class="op">=</span> <span class="st">"case"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="illustrate-masking">Illustrate masking<a class="anchor" aria-label="anchor" href="#illustrate-masking"></a>
+</h2>
+<p>Run same code, but now with masking. Explain what was masked and
+why.</p>
+</div>
+<div class="section level2">
+<h2 id="finalize-table-for-publication-using-gt">Finalize table for publication using <strong>gt</strong><a class="anchor" aria-label="anchor" href="#finalize-table-for-publication-using-gt"></a>
+</h2>
+</div>
+<div class="section level2">
+<h2 id="finalize-table-for-publication-using-flextable">Finalize table for publication using <strong>flextable</strong><a class="anchor" aria-label="anchor" href="#finalize-table-for-publication-using-flextable"></a>
+</h2>
+</div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
