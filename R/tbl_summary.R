@@ -1,7 +1,7 @@
 # Quiet R CMD check notes of the type "no visible binding for global variable..."
 utils::globalVariables(c(
   ".n_by_level", ".p25", ".p50", ".p75", ".stat_label", ".stat_value",
-  ".sum", ".var_type", ".n"
+  ".sum", ".var_type", ".n", ".stat_num1", ".stat_num2", ".stat_num3"
 ))
 
 #' Summarize variables
@@ -12,6 +12,7 @@ utils::globalVariables(c(
 #' @param by a
 #' @param by_total_val a
 #' @param mask A logical value. Mask person-sensitive aggregated counts?
+#' @param add_num_stat A logical value. Add numeric columns with statistics?
 #'
 #' @return data.table
 #' @export
@@ -25,7 +26,8 @@ tbl_summary <- function(x,
                         weight = NULL,
                         by = NULL,
                         by_total_val = ".all",
-                        mask = FALSE
+                        mask = FALSE,
+                        add_num_stat = FALSE
                         ) {
 
   ### Input checks ###
@@ -83,8 +85,6 @@ tbl_summary <- function(x,
   ]
 
   # Fix ".n" statistic
-  # TODO: this should be handled automatically instead. Mybe add ".n" variable type
-  # or is there a better way? That type would be exposed to users...
   dt <- dt[
     , `:=` (
       .var_type = fifelse(.var_name == ".n", "n", .var_type),
@@ -98,9 +98,36 @@ tbl_summary <- function(x,
     )
   ]
 
+  # Add numeric stat columns
+  # TODO: Does not feel great to recalculate statistics here. Can this be
+  # done in a more natural place?
+  dt <- dt[
+    , `:=`(
+        .stat_num1 = fcase(
+          .var_type == "n", as.numeric(.n_var_level),
+          .var_type == "bin", as.numeric(.sum),
+          .var_type == "cat", as.numeric(.sum),
+          .var_type == "cont", as.numeric(.p50),
+          default = NA_real_
+        ),
+        .stat_num2 = fcase(
+          .var_type == "bin", as.numeric(100 * .sum / .n_by_level),
+          .var_type == "cat", as.numeric(100 * .sum / .n_by_level),
+          .var_type == "cont", as.numeric(.p25),
+          default = NA_real_
+        ),
+        .stat_num3 = fcase(
+          .var_type == "cont", as.numeric(.p75),
+          default = NA_real_
+        )
+      )
+  ]
+
+  # Restrict to relevant columns
   dt <- dt[
     , .(.by, .var_name, .var_type, .n_by_level, .var_level,
-        .stat_label, .stat_value, .mask_by_level, .mask_var_level)
+        .stat_label, .stat_value, .mask_by_level, .mask_var_level,
+        .stat_num1, .stat_num2, .stat_num3)
   ]
 
   ### Mask person-sensitive statistics ###
@@ -120,15 +147,11 @@ tbl_summary <- function(x,
   dt[.var_type == "bin"]$.var_level <- ""
 
 
-  ### Restructure ###
+  ### Remove numeric stat columns if not requested ###
+  if(!add_num_stat) {
+    dt[, `:=`(.stat_num1 = NULL, .stat_num2 = NULL, .stat_num3 = NULL)]
+  }
 
-  dt_wide <- dcast(
-    dt,
-    .var_name + .var_type + .stat_label + .var_level ~ .by,
-    value.var = ".stat_value"
-  )
-
-
-  dt_wide
+  dt[]
 }
 

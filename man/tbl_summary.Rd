@@ -10,7 +10,8 @@ tbl_summary(
   weight = NULL,
   by = NULL,
   by_total_val = ".all",
-  mask = FALSE
+  mask = FALSE,
+  add_num_stat = FALSE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ tbl_summary(
 \item{by_total_val}{a}
 
 \item{mask}{A logical value. Mask person-sensitive aggregated counts?}
+
+\item{add_num_stat}{A logical value. Add numeric columns with statistics?}
 }
 \value{
 data.table
