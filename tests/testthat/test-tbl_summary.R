@@ -20,3 +20,18 @@ test_that("tbl_summary works", {
     by = "by"
   )
 })
+
+test_that("tbl_summary performance tests", {
+  skip("Only run performance tests manually")
+
+  n <- 1e6
+  x <- data.frame(
+    var_cont = rnorm(n),
+    var_bin = sample(c(FALSE, TRUE), size = n, replace = TRUE),
+    var_cat = sample(c("A", "B"), size = n, replace = TRUE),
+    by = sample(c("grp1", "grp2"), size = n, replace = TRUE)
+  )
+  Sys.time()
+  dt <- tbl_summary(x, vars = c("var_cont", "var_bin", "var_cat"), by = "by")
+  Sys.time()
+})
