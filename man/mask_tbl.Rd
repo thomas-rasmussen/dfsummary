@@ -17,9 +17,12 @@ Masks person-sensitive counts in a 'tblsummary', or more precisely, adds
 a variable to the input table, that can be used to do the masking.
 }
 \examples{
-x <- data.frame(
-  var = c("A", "B", "B", rep("C", 5L))
-)
-tbl1 <- summarize_df(x, var = "var")
-tbl2 <- mask_tbl(tbl1)
+\dontrun{
+  x <- data.frame(
+    var = c("A", "B", "B", rep("C", 5L))
+  )
+  tbl1 <- summarize_df(x, var = "var")
+  tbl2 <- mask_tbl(tbl1)
 }
+}
+\keyword{internal}

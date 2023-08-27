@@ -31,9 +31,12 @@ A data.table containing a descriptive summary of \code{vars}.
 Returns a descriptive summary of variables in a data.frame.
 }
 \examples{
-x <- data.frame(var1 = 1:10, var2 = c(rep("A", 5), rep("B", 5)))
-summarize_df(
-  x,
-  vars = c(cont = "var1", "var2")
-)
+\dontrun{
+  x <- data.frame(var1 = 1:10, var2 = c(rep("A", 5), rep("B", 5)))
+  summarize_df(
+   x,
+   vars = c(cont = "var1", "var2")
+  )
 }
+}
+\keyword{internal}

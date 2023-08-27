@@ -12,14 +12,16 @@ utils::globalVariables(c(
 #' @param x data.table.
 #'
 #' @return data.table
-#' @export
+#' @keywords internal
 #'
 #' @examples
-#' x <- data.frame(
-#'   var = c("A", "B", "B", rep("C", 5L))
-#' )
-#' tbl1 <- summarize_df(x, var = "var")
-#' tbl2 <- mask_tbl(tbl1)
+#' \dontrun{
+#'   x <- data.frame(
+#'     var = c("A", "B", "B", rep("C", 5L))
+#'   )
+#'   tbl1 <- summarize_df(x, var = "var")
+#'   tbl2 <- mask_tbl(tbl1)
+#' }
  mask_tbl <- function(x) {
 
 # Take as input, output from summarize_df (rename to summarize_tbl?). There
