@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 library(dfsummary)
+library(data.table)
 ```
 
 # Introduction
@@ -27,30 +28,77 @@ be sure that the summarized data can not be used to identify data on individuals
 The main aim of **dfsummary** is to provide functions for summarizing data and
 automatically mask any descriptive summary statistics that are deemed
 person-sensitive. A secondary aim of **dfsummary** is to keep things simple:
-the package depends only on **data.table**, which only depends on R itself. Also,
-the output is a simple data.table. As a consequence, the focus is *not* to
-make publication-ready tables; it is up to the user to finalize the tables. That
-being said, the output is formatted to facilitate use of other packages like
-**gt** and **flextable** to finalize the tables for publication, and we show
-examples of how we imagine one could do so.
+the package depends only on **data.table** (which only depends on R itself) and
+the summarized data is returned in a data.frame.
 
 # Summarize a data.frame
 
-To illustrate how the package can summarize a data.frame, we will use the infert
-dataset from the **datasets** package.
+To illustrate how the package works, we will use a simple simulated dataset
+imitating a population with information on an exposure variable, and different
+types of patient characteristics.
 
 ```{r}
-
-dt <- tbl_summary(
-  infert,
-  vars = c("age", cat = "parity"),
-  by = "case"
+set.seed(1)
+n <- 20
+pop <-data.frame(
+  exposure = sample(c("no", "yes"), n, replace = TRUE),
+  cat_var = sample(c("A", "B", "C"), n, replace = TRUE),
+  bin_var = sample(c(0, 1), n, replace = TRUE),
+  cont_var = rnorm(n)
 )
+
+pop
 ```
+
+Now lets summarize the data using the `tbl_summary` function from the package.
+
+```{r}
+summarized_pop <- tbl_summary(
+  x = pop,
+  vars = c("cat_var", "bin_var", "cont_var"),
+  by = "exposure"
+)
+
+summarized_pop
+```
+
+By design, the summarized data is in long format. It is up to the user to make
+the aggregated data look more presentable. Lets start by restructuring the data
+to a wider format, with a column for each exposure level.
+
+```{r}
+wide_dat <- dcast(
+  summarized_pop,
+  .var_name + .var_level ~ .by,
+  value.var = ".stat_value"
+)
+
+wide_dat
+```
+
+
 
 # Illustrate masking
 
-Run same code, but now with masking. Explain what was masked and why.
+We can see that the summarized data contains aggregated counts larger than zero
+and smaller than five; values often considered person-sensitive. Person-sensitive
+counts can be automatically masked using the `mask` argument.
+
+```{r}
+pop |>
+  tbl_summary(
+    vars = c("cat_var", "bin_var", "cont_var"),
+    by = "exposure",
+    mask = TRUE
+  ) |>
+  dcast(
+    .var_name + .var_level ~ .by,
+    value.var = ".stat_value"
+  ) 
+  
+```
+We can see that quite a lot has beene masked. Why? See "masking" vignette for more
+information?
 
 
 # Finalize table for publication using **gt**
