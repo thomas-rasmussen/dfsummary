@@ -4,7 +4,7 @@
 \alias{.wquantile}
 \title{Weighted quantile}
 \usage{
-.wquantile(x, w, prob, na.rm = FALSE)
+.wquantile(x, w = rep(1L, length(x)), prob, na.rm = FALSE)
 }
 \arguments{
 \item{x}{A numeric or logical vector.}
@@ -12,21 +12,27 @@
 \item{w}{A numeric vector of non-negative numbers. Weights associated with
 \code{x}. Default is NULL, ie no weights are used.}
 
-\item{prob}{Numeric value. Quantile to estimate.}
+\item{prob}{Numeric vector of probabilities with values in \verb{[0;1]}
+corresponding to quantiles to estimate.}
 
 \item{na.rm}{A logical value. Should missing values (including NaN) in \code{x}
 be removed?}
 }
 \value{
-A numeric.
+A numeric vector.
 }
 \description{
-Calculates weighted type 7 quantile. Simplified version of code from
-https://arxiv.org/pdf/2304.07265.pdf.
-TODO: need to read up on this to make sure everything makes sense.
+Estimates quantiles using the weighted Harrell-Davis quantile estimator.
+}
+\details{
+Implemented based on https://arxiv.org/pdf/2304.07265.pdf.
 }
 \examples{
-\dontrun{TODO}
+\dontrun{
+  x <- 1:5
+  w <- c(1, 0, 1, 0, 1)
+  .wquantile(x, w, prob = 0.5)
+}
 }
 \keyword{:}
 \keyword{internal}

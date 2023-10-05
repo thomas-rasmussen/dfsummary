@@ -197,26 +197,54 @@
 
 #' Weighted quantile
 #'
-#' Calculates weighted type 7 quantile. Simplified version of code from
-#' https://arxiv.org/pdf/2304.07265.pdf.
-#' TODO: need to read up on this to make sure everything makes sense.
+#' Estimates quantiles using the weighted Harrell-Davis quantile estimator.
 #'
-#' @inheritParams .wmean
-#' @param prob Numeric value. Quantile to estimate.
+#' Implemented based on https://arxiv.org/pdf/2304.07265.pdf.
 #'
-#' @return A numeric.
+#' @inheritParams .winputcheck
+#' @param prob Numeric vector of probabilities with values in \verb{[0;1]}
+#'   corresponding to quantiles to estimate.
+#'
+#' @return A numeric vector.
 #' @keywords: internal
 #'
 #' @examples
-#' \dontrun{TODO}
+#' \dontrun{
+#'   x <- 1:5
+#'   w <- c(1, 0, 1, 0, 1)
+#'   .wquantile(x, w, prob = 0.5)
+#' }
 .wquantile <- function(x,
-                       w,
+                       w = rep(1L, length(x)),
                        prob,
                        na.rm = FALSE) {
+
+  # Input checks
   .winputcheck(x, w, na.rm)
-  n <- length(x)
-  if (is.null(w)) {
-    w <- rep(1L, n)
+  if (is.factor(prob)) {
+    stop(
+      paste0(
+        "`prob` must be a numeric vector. ",
+        "`prob` is a factor."
+      )
+      , call. = FALSE
+    )
+  } else if (!is.numeric(prob)) {
+    stop(
+      paste0(
+        "`prob` must be a numeric vector. ",
+        '`prob` has type "', typeof(prob), '".'
+      )
+      , call. = FALSE
+    )
+  } else if (any(prob < 0 | prob > 1)) {
+    stop(
+      paste0(
+        "`prob` must take values in [0;1]. ",
+        '`prob` takes values outside [0;1].'
+      )
+      , call. = FALSE
+    )
   }
 
   if (na.rm & any(is.na(x))) {
@@ -224,20 +252,22 @@
     x <- x[!is.na(x)]
   }
 
-  # kish_ess
-  nw <- sum(w)**2 / sum(w**2)
+  # Calculate Kish's effective sample size
+  n <- sum(w)**2 / sum(w**2)
 
-  indexes <- order(x)
-  x <- x[indexes]
-  w <- w[indexes]
+  idx<- order(x)
+  x <- x[idx]
+  w <- w[idx]
+
+
   w <- w / sum(w)
-  t <- cumsum(c(0, w))
+  cdf_probs <- cumsum(c(0, w))
 
-  cdf_values <- (nw - 1) * prob + 1
-  cdf_values <- max(min(cdf_values, nw), 1)
-  cdf_values <- pmax(0, pmin(1, t * nw - cdf_values + 1))
-  W <- utils::tail(cdf_values, -1) - utils::head(cdf_values, -1)
-  sum(W * x)
+  sapply(prob, function(p) {
+    q <- stats::pbeta(cdf_probs, (n + 1) * p, (n + 1) * (1 - p))
+    wni <- utils::tail(q, - 1) - utils::head(q, - 1)
+    sum(wni * x)
+  })
 }
 
 

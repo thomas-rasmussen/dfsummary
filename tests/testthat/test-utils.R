@@ -115,14 +115,28 @@ test_that(".wsd() returns NA if input vector is of length one or zero", {
 
 #### .wquantile ####
 
-test_that(".wquantile works", {
-  expect_equal(.wquantile(x = c(1, 3, 2), w = NULL, prob = 0.5), 2)
-  # TODO: Intuitively this should be exactly 3. Why isn't it? Is it because of the
-  # definition of the weighted quantile or a bug? Investigate. Might just be a
-  # consequence of the definition.
-  # expect_equal(.wquantile(x = c(1, 2, 3), w = c(1, 1, 3), prob = 0.5), 3)
-  expect_equal(.wquantile(x = c(1, 2, 3), w = c(2, 2, 2), prob = 0.5), 2)
+test_that("using unit weights results in intuitive results", {
+  expect_equal(.wquantile(x = c(1, 3, 2), prob = 0.5), 2)
+  expect_equal(.wquantile(x = c(1, 2, 2, 3), prob = 0.5), 2)
+  expect_equal(.wquantile(x = c(1, 2, 4, 5), prob = 0.5), 3)
 })
+
+test_that("using non-unit weights results in intuitive results", {
+  expect_equal(.wquantile(x = c(1, 2, 3), w = c(2, 2, 2), prob = 0.5), 2)
+  expect_equal(.wquantile(x = c(1, 2, 3), w = c(0.5, 0.5, 0.5), prob = 0.5), 2)
+})
+
+test_that("NA's are handled as expected", {
+  expect_equal(.wquantile(x =c(1, NA_real_, 2,  3), prob = 0.5), NA_real_)
+  expect_equal(.wquantile(x =c(1, NA_real_, 2,  3), prob = 0.5, na.rm = TRUE), 2)
+})
+
+test_that("`prob` argument works when a vector is provided", {
+  q <- .wquantile(x = 1:9, prob = c(1/3, 0.5, 2/3))
+  expect_equal(round(q, 1), c(3.5, 5, 6.5))
+  expect_equal(.wquantile(x = c(1:10, NA_real_), prob = c(0.4, 0.6)), c(NA_real_, NA_real_))
+})
+
 
 
 #### .wsum ####
