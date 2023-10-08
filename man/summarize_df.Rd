@@ -17,7 +17,7 @@ the data.}
 
 \item{weight}{String. Name of variable in \code{x} that contains
 observation weights. Must be a numeric variable, with non-negative
-numbers. Default is NULL, ie no weights are used.}
+numbers. By default (\code{weight} = NULL), all weights are set to one.}
 
 \item{by}{String. Name of variable to group by while summarizing. Default is
 NULL, ie no grouping variable is used.}

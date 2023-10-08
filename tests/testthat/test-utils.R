@@ -42,14 +42,14 @@ test_that(".is_binary() `tol` argument works as intended", {
 
 test_that(".winputcheck() returns NULL if inputs is valid", {
   expect_null(.winputcheck(x = 1:2, w = 1:2, na.rm = FALSE))
-  expect_null(.winputcheck(x = 1:2, w = NULL, na.rm = FALSE))
-  expect_null(.winputcheck(x = c(1, NA), w = NULL, na.rm = TRUE))
+  expect_null(.winputcheck(x = 1:2, w = c(1L, 1L), na.rm = FALSE))
+  expect_null(.winputcheck(x = c(1, NA), w = c(1L, 1L), na.rm = TRUE))
 })
 
 test_that(".winputcheck() throws an error if input is invalid", {
   expect_error(.winputcheck(x = 1:2, w = 1, na.rm = TRUE))
-  expect_error(.winputcheck(x = 1:2, w = NULL, na.rm = 1))
-  expect_error(.winputcheck(x = as.factor(1:2), w = NULL, na.rm = FALSE))
+  expect_error(.winputcheck(x = 1:2, w = c(1L, 1L), na.rm = 1))
+  expect_error(.winputcheck(x = as.factor(1:2), w = c(1L, 1L), na.rm = FALSE))
   expect_error(.winputcheck(x = 1:2, w = as.factor(1:2), na.rm = FALSE))
   expect_error(.winputcheck(x = 1:2, w = c(NA, 1), na.rm = FALSE))
   expect_error(.winputcheck(x = 1:2, w = c(-1, 1), na.rm = FALSE))

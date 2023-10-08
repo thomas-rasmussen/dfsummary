@@ -10,7 +10,7 @@
 \item{x}{A numeric or logical vector.}
 
 \item{w}{A numeric vector of non-negative numbers. Weights associated with
-\code{x}. Default is NULL, ie no weights are used.}
+\code{x}.}
 
 \item{prob}{Numeric vector of probabilities with values in \verb{[0;1]}
 corresponding to quantiles to estimate.}

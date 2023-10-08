@@ -4,13 +4,13 @@
 \alias{.wsd}
 \title{Weighted standard deviation}
 \usage{
-.wsd(x, w = NULL, na.rm = FALSE)
+.wsd(x, w = rep(1L, length(x)), na.rm = FALSE)
 }
 \arguments{
 \item{x}{A numeric or logical vector.}
 
 \item{w}{A numeric vector of non-negative numbers. Weights associated with
-\code{x}. Default is NULL, ie no weights are used.}
+\code{x}.}
 
 \item{na.rm}{A logical value. Should missing values (including NaN) in \code{x}
 be removed?}

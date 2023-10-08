@@ -162,7 +162,7 @@ summarize_df <- function(x,
 #'   information.
 #' @param weight String. Name of variable in `x` that contains
 #'   observation weights. Must be a numeric variable, with non-negative
-#'   numbers. Default is NULL, ie no weights are used.
+#'   numbers. By default (`weight` = NULL), all weights are set to one.
 #' @param by String. Name of variable to group by while summarizing. Default is
 #' NULL, ie no grouping variable is used.
 #' @param by_total_val String. Name given to overall by-group.

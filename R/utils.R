@@ -73,7 +73,7 @@
 #'
 #' @param x A numeric or logical vector.
 #' @param w A numeric vector of non-negative numbers. Weights associated with
-#'  `x`. Default is NULL, ie no weights are used.
+#'  `x`.
 #' @param na.rm A logical value. Should missing values (including NaN) in `x`
 #'   be removed?
 #'
@@ -109,7 +109,7 @@
       )
       , call. = FALSE
     )
-  } else if (!(is.numeric(w) || is.null(w))) {
+  } else if (!is.numeric(w)) {
     stop(
       paste0(
         "`w` must be a numeric vector. ",
@@ -117,7 +117,7 @@
       )
       , call. = FALSE
     )
-  } else if (!is.null(w) && length(x) != length(w)) {
+  } else if (length(x) != length(w)) {
     stop(
       paste0(
         "`x` and `w` must have the same length. ",
@@ -179,20 +179,15 @@
 #'   .wmean(x = 1:2, w = 1:2)
 #' }
 .wmean <- function(x,
-                   w = NULL,
+                   w = rep(1L, length(x)),
                    na.rm = FALSE) {
   .winputcheck(x, w, na.rm)
-  if (is.null(w)) {
-    w <- rep(1, length(x))
-  }
   if (na.rm) {
     w <- w[!is.na(x)]
     x <- x[!is.na(x)]
   }
-
   sum(w*x)/sum(w)
 }
-
 
 
 #' Weighted quantile
@@ -288,12 +283,9 @@
 #'   .wsd(x = 1:5)
 #' }
 .wsd <- function(x,
-                 w = NULL,
+                 w = rep(1L, length(x)),
                  na.rm = FALSE) {
   .winputcheck(x, w, na.rm)
-  if (is.null(w)) {
-    w <- rep(1L, length(x))
-  }
   if (na.rm) {
     w <- w[!is.na(x)]
     x <- x[!is.na(x)]
@@ -324,18 +316,14 @@
 #'    .wsum(x = 1:2, w = rep(2, 2))
 #' }
 .wsum <- function(x,
-                  w = NULL,
+                  w = rep(1L, length(x)),
                   na.rm = FALSE) {
 
   .winputcheck(x, w, na.rm)
-  if (is.null(w)) {
-    w <- rep(1, length(x))
-  }
   if (na.rm) {
     w <- w[!is.na(x)]
     x <- x[!is.na(x)]
   }
-
   sum(w*x)
 }
 
