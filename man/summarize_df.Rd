@@ -2,7 +2,7 @@
 % Please edit documentation in R/summarize_df.R
 \name{summarize_df}
 \alias{summarize_df}
-\title{Summarizes variables in a data.frame}
+\title{Summarize variables in a data.frame}
 \usage{
 summarize_df(x, vars, weight = NULL, by = NULL, by_total_val = ".all")
 }
@@ -12,20 +12,40 @@ summarize_df(x, vars, weight = NULL, by = NULL, by_total_val = ".all")
 \item{vars}{Character vector. Names of variables in \code{x} to summarize.
 Variables types can be specified by naming elements of \code{var}. Variable
 types are: "bin" (binary), "cont" (continuous), "cat" (categorical).
-If ny variable type is specified, the type is automatically deduced from
+If no variable type is specified, the type is automatically deduced from
 the data.}
 
 \item{weight}{String. Name of variable in \code{x} that contains
 observation weights. Must be a numeric variable, with non-negative
-numbers. By default (\code{weight} = NULL), all weights are set to one.}
+real values. By default (\code{weight} = NULL), all weights are set to one.}
 
 \item{by}{String. Name of variable to group by while summarizing. Default is
-NULL, ie no grouping variable is used.}
+NULL, ie no grouping variable is used. Note that if no grouping variable is
+used, the returned data.table will still contain a ".by" variable, taking
+the value given in \code{by_total_val}}
 
 \item{by_total_val}{String. Name given to overall by-group.}
 }
 \value{
-A data.table containing a descriptive summary of \code{vars}.
+A data.table containing a descriptive summary of \code{vars}. The
+data.table contains the following variables:
+Group information:
+\itemize{
+\item ".var_name": Variable name.
+\item ".var_type": Variable type.
+\item ".by": by-group value.
+Summary statistics:
+\item ".n_by_level": Number of observations in ".by" group.
+\item ".var_level": Variable level. Missing for continuous variables.
+\item ".n_var_level": Number of observations in ".var_level" group.
+\item ".sum": Sum of variable in group. For binary and categorical variables
+.n_var_level = .sum.
+\item .stddev: Standard deviation in group. NA for binary and categorical
+variables.
+\item ".p25": 25th percentile.
+\item ".p50": 50th percentile / median.
+\item ".p75": 75th percentile.
+}
 }
 \description{
 Returns a descriptive summary of variables in a data.frame.

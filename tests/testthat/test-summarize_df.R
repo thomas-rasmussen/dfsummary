@@ -23,9 +23,6 @@ test_that("summary_df() signals error if input is invalid", {
   )
 })
 
-test_that(
-  "how does var = c(var, var, cat = var) works? Can it cause errors?", {}
-  )
 
 #### .is_var_name ####
 

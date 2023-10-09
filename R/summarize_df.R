@@ -4,18 +4,34 @@ utils::globalVariables(c(
 ))
 
 
-#' Summarizes variables in a data.frame
+#' Summarize variables in a data.frame
 #'
 #' Returns a descriptive summary of variables in a data.frame.
 #'
 #' @param vars Character vector. Names of variables in `x` to summarize.
 #'   Variables types can be specified by naming elements of `var`. Variable
 #'   types are: "bin" (binary), "cont" (continuous), "cat" (categorical).
-#'   If ny variable type is specified, the type is automatically deduced from
+#'   If no variable type is specified, the type is automatically deduced from
 #'   the data.
 #' @inheritParams .summarize_var
 #'
-#' @return A data.table containing a descriptive summary of `vars`.
+#' @return A data.table containing a descriptive summary of `vars`. The
+#'   data.table contains the following variables:
+#'   Group information:
+#'   - ".var_name": Variable name.
+#'   - ".var_type": Variable type.
+#'   - ".by": by-group value.
+#'   Summary statistics:
+#'   - ".n_by_level": Number of observations in ".by" group.
+#'   - ".var_level": Variable level. Missing for continuous variables.
+#'   - ".n_var_level": Number of observations in ".var_level" group.
+#'   - ".sum": Sum of variable in group. For binary and categorical variables
+#'     .n_var_level = .sum.
+#'   - .stddev: Standard deviation in group. NA for binary and categorical
+#'     variables.
+#'   - ".p25": 25th percentile.
+#'   - ".p50": 50th percentile / median.
+#'   - ".p75": 75th percentile.
 #' @import data.table
 #' @keywords internal
 #'
@@ -91,7 +107,7 @@ summarize_df <- function(x,
 
 #### Helpers ####
 
-#' Checks if variable exists in data.frame.
+#' Check if variable exists in data.frame.
 #'
 #' Checks that a given variable name is a variable name in input data.frame.
 #'
@@ -144,13 +160,13 @@ summarize_df <- function(x,
   invisible(NULL)
 }
 
-#' Summarizes a variable
+#' Summarize a variable
 #'
 #' Creates a descriptive summary of a variable in a data.frame.
 #'
 #' If `type` is NULL, the variable type of `var` will be deduced from the data:
-#' 1) If the variable takes "binary" values, eg is a logical vector, or a numeric
-#'    vector with zero and one's, the `type` is set to "bin".
+#' 1) If the variable takes "binary" values, ie is a logical vector, or a numeric
+#'    vector with zero and one's, then `type` is set to "bin".
 #' 2) Else, if the variable is numeric then `type` is set to "cont".
 #' 3) Else, `type` is set to "cat".
 #'
@@ -162,12 +178,30 @@ summarize_df <- function(x,
 #'   information.
 #' @param weight String. Name of variable in `x` that contains
 #'   observation weights. Must be a numeric variable, with non-negative
-#'   numbers. By default (`weight` = NULL), all weights are set to one.
+#'   real values. By default (`weight` = NULL), all weights are set to one.
 #' @param by String. Name of variable to group by while summarizing. Default is
-#' NULL, ie no grouping variable is used.
+#'   NULL, ie no grouping variable is used. Note that if no grouping variable is
+#'   used, the returned data.table will still contain a ".by" variable, taking
+#'   the value given in `by_total_val`
 #' @param by_total_val String. Name given to overall by-group.
 #'
-#' @return A data.table containing a descriptive summary of `var`.
+#' @return A data.table containing a descriptive summary of `var`. The
+#'   data.table contains the following variables:
+#'   Group information:
+#'   - ".var_name": Variable name.
+#'   - ".var_type": Variable type.
+#'   - ".by": by-group value.
+#'   Summary statistics:
+#'   - ".n_by_level": Number of observations in ".by" group.
+#'   - ".var_level": Variable level. Only used for categorical variables.
+#'   - ".n_var_level": Number of observations in ".var_level" group.
+#'   - ".sum": Sum of variable in group. For binary and categorical variables
+#'     .n_var_level = .sum.
+#'   - .stddev: Standard deviation in group. NA for binary and categorical
+#'     variables.
+#'   - ".p25": 25th percentile.
+#'   - ".p50": 50th percentile / median.
+#'   - ".p75": 75th percentile.
 #' @keywords internal
 #' @import data.table
 #'
@@ -386,7 +420,17 @@ summarize_df <- function(x,
     ".var_name", ".var_type", ".by", ".n_by_level", ".var_level", ".n_var_level"
   )
   setcolorder(dt_summary, col_order)
-  dt_summary[order(.by, .var_level)]
+
+  dt_summary <- dt_summary[order(.by, .var_level)]
+
+  # For binary variables we only keep the line corresponding to the
+  # "1"/"TRUE" category.
+  if (type == "bin") {
+    dt_summary <- dt_summary[.var_level %in% c("1", "TRUE")]
+    dt_summary$.var_level <- ""
+  }
+
+  dt_summary[]
 }
 
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/summarize_df.R
 \name{.summarize_var}
 \alias{.summarize_var}
-\title{Summarizes a variable}
+\title{Summarize a variable}
 \usage{
 .summarize_var(
   x,
@@ -25,15 +25,35 @@ information.}
 
 \item{weight}{String. Name of variable in \code{x} that contains
 observation weights. Must be a numeric variable, with non-negative
-numbers. By default (\code{weight} = NULL), all weights are set to one.}
+real values. By default (\code{weight} = NULL), all weights are set to one.}
 
 \item{by}{String. Name of variable to group by while summarizing. Default is
-NULL, ie no grouping variable is used.}
+NULL, ie no grouping variable is used. Note that if no grouping variable is
+used, the returned data.table will still contain a ".by" variable, taking
+the value given in \code{by_total_val}}
 
 \item{by_total_val}{String. Name given to overall by-group.}
 }
 \value{
-A data.table containing a descriptive summary of \code{var}.
+A data.table containing a descriptive summary of \code{var}. The
+data.table contains the following variables:
+Group information:
+\itemize{
+\item ".var_name": Variable name.
+\item ".var_type": Variable type.
+\item ".by": by-group value.
+Summary statistics:
+\item ".n_by_level": Number of observations in ".by" group.
+\item ".var_level": Variable level. Only used for categorical variables.
+\item ".n_var_level": Number of observations in ".var_level" group.
+\item ".sum": Sum of variable in group. For binary and categorical variables
+.n_var_level = .sum.
+\item .stddev: Standard deviation in group. NA for binary and categorical
+variables.
+\item ".p25": 25th percentile.
+\item ".p50": 50th percentile / median.
+\item ".p75": 75th percentile.
+}
 }
 \description{
 Creates a descriptive summary of a variable in a data.frame.
@@ -41,8 +61,8 @@ Creates a descriptive summary of a variable in a data.frame.
 \details{
 If \code{type} is NULL, the variable type of \code{var} will be deduced from the data:
 \enumerate{
-\item If the variable takes "binary" values, eg is a logical vector, or a numeric
-vector with zero and one's, the \code{type} is set to "bin".
+\item If the variable takes "binary" values, ie is a logical vector, or a numeric
+vector with zero and one's, then \code{type} is set to "bin".
 \item Else, if the variable is numeric then \code{type} is set to "cont".
 \item Else, \code{type} is set to "cat".
 }

@@ -141,12 +141,6 @@ tbl_summary <- function(x,
     , `:=`(.mask_by_level = NULL, .mask_var_level = NULL, .n_by_level = NULL)
   ]
 
-  ### Remove FALSE/0 lines for binary variables ###
-
-  dt <- dt[!(.var_type == "bin" & .var_level %in% c("0", "FALSE"))]
-  dt[.var_type == "bin"]$.var_level <- ""
-
-
   ### Remove numeric stat columns if not requested ###
   if(!add_num_stat) {
     dt[, `:=`(.stat_num1 = NULL, .stat_num2 = NULL, .stat_num3 = NULL)]

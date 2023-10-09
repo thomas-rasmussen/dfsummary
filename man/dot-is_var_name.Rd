@@ -2,7 +2,7 @@
 % Please edit documentation in R/summarize_df.R
 \name{.is_var_name}
 \alias{.is_var_name}
-\title{Checks if variable exists in data.frame.}
+\title{Check if variable exists in data.frame.}
 \usage{
 .is_var_name(x, var)
 }
