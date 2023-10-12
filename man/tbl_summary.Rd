@@ -2,7 +2,7 @@
 % Please edit documentation in R/tbl_summary.R
 \name{tbl_summary}
 \alias{tbl_summary}
-\title{Summarize variables}
+\title{Make descriptive summary}
 \usage{
 tbl_summary(
   x,
@@ -15,28 +15,66 @@ tbl_summary(
 )
 }
 \arguments{
-\item{x}{a}
+\item{x}{A data.frame. Data to summarize.}
 
-\item{vars}{a}
+\item{vars}{Character vector. Names of variables in \code{x} to summarize.
+Variables types can be specified by naming elements of \code{var}. Variable
+types are: "bin" (binary), "cont" (continuous), "cat" (categorical).
+If no variable type is specified, the type is automatically deduced from
+the data. See details for more information.}
 
-\item{weight}{a}
+\item{weight}{String. Name of variable in \code{x} that contains
+observation weights. Must be a numeric variable, with non-negative
+real values. By default (\code{weight} = NULL), all weights are set to one.}
 
-\item{by}{a}
+\item{by}{String. Name of variable to group by while summarizing. Default is
+NULL, ie no grouping variable is used. Note that if no grouping variable is
+used, the returned data.table will still contain a ".by" variable, taking
+the value given in \code{by_total_val}.}
 
-\item{by_total_val}{a}
+\item{by_total_val}{String. Name given to overall by-group.}
 
 \item{mask}{A logical value. Mask person-sensitive aggregated counts?}
 
 \item{add_num_stat}{A logical value. Add numeric columns with statistics?}
 }
 \value{
-data.table
+A data.table containing a descriptive summary of \code{vars}. The
+data.table contains the following variables:
+\itemize{
+\item ".by": by-group value.
+\item ".var_name": Variable name.
+\item ".var_type": Variable type.
+\item ".var_level": Variable level. Only used for categorical variables.
+\item ".stat_label": Short-name of calculated statistics.
+\item ".stat_value": Statistics value.
+}
 }
 \description{
-Summarize variables
+Makes a descriptive summary of the distribution of variables in a given
+data.frame.
+}
+\details{
+If the type of a variable in \code{vars} is not specified, the type is deduced
+from the data using the following algorithm:
+\enumerate{
+\item If the variable takes "binary" values, ie is a logical vector, or a
+numeric vector with zero and one's, then the variable is assumed to be
+a binary variable.
+\item Else, if the variable is numeric then it is assumed to be a
+continuous variable.
+\item Else, the variable is assumed to be a categorical variable.
+}
 }
 \examples{
-\dontrun{
-  TODO
-}
+x <- data.frame(
+  var_cont = 1:10,
+  var_bin = c(rep(1, 5), rep(0, 5)),
+  var_cat = c(rep(1, 5), rep(2, 5))
+)
+
+dt <- tbl_summary(
+  x = x,
+  vars = c("var_cont", "var_bin", cat = "var_cat"),
+)
 }
