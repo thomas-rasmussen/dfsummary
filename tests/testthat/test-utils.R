@@ -99,6 +99,10 @@ test_that(".wsd() gives correct results", {
     x[i] <- (-1)**i*sqrt((n-1)/n)
   }
   expect_equal(.wsd(x, w = rep(k, n)), 1)
+
+  x <- 1:5
+  w <- rep(0.5, 5L)
+  expect_equal(.wsd(x), sd(x))
 })
 
 test_that(".wsd() handles NA's correctly", {
