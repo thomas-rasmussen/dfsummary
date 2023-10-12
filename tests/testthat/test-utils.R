@@ -119,11 +119,13 @@ test_that("using unit weights results in intuitive results", {
   expect_equal(.wquantile(x = c(1, 3, 2), prob = 0.5), 2)
   expect_equal(.wquantile(x = c(1, 2, 2, 3), prob = 0.5), 2)
   expect_equal(.wquantile(x = c(1, 2, 4, 5), prob = 0.5), 3)
+  expect_equal(.wquantile(x = c(1, 1, 2, 3, 3), prob = 0.5), 2)
 })
 
 test_that("using non-unit weights results in intuitive results", {
   expect_equal(.wquantile(x = c(1, 2, 3), w = c(2, 2, 2), prob = 0.5), 2)
   expect_equal(.wquantile(x = c(1, 2, 3), w = c(0.5, 0.5, 0.5), prob = 0.5), 2)
+  expect_equal(.wquantile(x = c(1, 2, 3), w= c(2, 1, 2), prob = 0.5), 2)
 })
 
 test_that("NA's are handled as expected", {
