@@ -19,8 +19,12 @@ be removed?}
 A numeric value.
 }
 \description{
-Calculates the weighted arithmetic mean of a numeric/logical vector \code{x} with
+Calculates the weighted arithmetic mean of a numeric vector \code{x} with
 associated weights \code{w}.
+}
+\details{
+Formula used:
+\deqn{\bar{x} = \frac{\sum_{i = 1}^n{w_i*x_i}}{\sum_{i = 1}^n{w_i}}}
 }
 \examples{
 \dontrun{

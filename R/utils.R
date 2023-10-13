@@ -166,8 +166,11 @@
 
 #' Weighted arithmetic mean
 #'
-#' Calculates the weighted arithmetic mean of a numeric/logical vector `x` with
+#' Calculates the weighted arithmetic mean of a numeric vector `x` with
 #' associated weights `w`.
+#'
+#' Formula used:
+#' \deqn{\bar{x} = \frac{\sum_{i = 1}^n{w_i*x_i}}{\sum_{i = 1}^n{w_i}}}
 #'
 #' @inheritParams .winputcheck
 #'
@@ -272,6 +275,19 @@
 #' associated weights `w`.
 #'
 #' The standard deviation of a length-one or zero-length vector is NA.
+#' Formula used:
+#' \deqn{sd =
+#'   \sqrt{
+#'    \frac{
+#'      \sum_{i = 1}^n w_i(x_i - \bar{x})^2
+#'    }
+#'    {
+#'      \frac{(m-1)\sum_{i = 1}^n w_i}{m}
+#'    }
+#'   }
+#' }
+#' where \eqn{m} is the number of non-zero weights, and \eqn{\bar{x}} is the
+#' weighted mean of the observations.
 #'
 #' @inheritParams .winputcheck
 #'
@@ -305,6 +321,9 @@
 #'
 #' Calculates the weighted sum of a numeric vector `x` with associated
 #' weights `w`.
+#'
+#' Formula used:
+#' \deqn{x. = \sum_{i = 1}^n{w_i*x_i}}
 #'
 #' @inheritParams .wmean
 #'

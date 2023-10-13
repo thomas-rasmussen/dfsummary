@@ -24,6 +24,19 @@ associated weights \code{w}.
 }
 \details{
 The standard deviation of a length-one or zero-length vector is NA.
+Formula used:
+\deqn{sd =
+  \sqrt{
+   \frac{
+     \sum_{i = 1}^n w_i(x_i - \bar{x})^2
+   }
+   {
+     \frac{(m-1)\sum_{i = 1}^n w_i}{m}
+   }
+  }
+}
+where \eqn{m} is the number of non-zero weights, and \eqn{\bar{x}} is the
+weighted mean of the observations.
 }
 \examples{
 \dontrun{

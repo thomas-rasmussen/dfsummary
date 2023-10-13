@@ -22,6 +22,10 @@ A numeric.
 Calculates the weighted sum of a numeric vector \code{x} with associated
 weights \code{w}.
 }
+\details{
+Formula used:
+\deqn{x. = \sum_{i = 1}^n{w_i*x_i}}
+}
 \examples{
 \dontrun{
    .wsum(x = 1:2, w = rep(2, 2))
