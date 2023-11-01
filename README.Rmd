@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/thomas-rasmussen/dfsummary/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/thomas-rasmussen/dfsummary/actions/workflows/R-CMD-check.yaml)
+[![test-coverage](https://github.com/thomas-rasmussen/dfsummary/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/thomas-rasmussen/dfsummary/actions/workflows/test-coverage.yaml)
 <!-- badges: end -->
 
 The goal of dfsummary is to make descriptive summries of datasets, where any person-sensitive information is automatically masked. In contrast to other packages, eg the excellent `gtsummary` package, this package does not aim to provide presentation-ready tables, but instead focuses on keeping things simple by relying only on the `data.table` package for efficient summarization. The summarized data is returned as a simple data.table and the user can then finalize the table themselves using eg the `gt` or `flextable` package.

@@ -6,6 +6,7 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/thomas-rasmussen/dfsummary/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/thomas-rasmussen/dfsummary/actions/workflows/R-CMD-check.yaml)
+[![test-coverage](https://github.com/thomas-rasmussen/dfsummary/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/thomas-rasmussen/dfsummary/actions/workflows/test-coverage.yaml)
 <!-- badges: end -->
 
 The goal of dfsummary is to make descriptive summries of datasets, where
