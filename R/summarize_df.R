@@ -1,6 +1,7 @@
 # Quiet R CMD check notes of the type "no visible binding for global variable..."
 utils::globalVariables(c(
-  ".", ".var", ".weight", ".by", ".var_level", ".var_name", ".n_var_level"
+  ".", ".var", ".weight", ".by", ".var_level", ".var_name", ".n_var_level",
+  ".var_level_order"
 ))
 
 
@@ -170,6 +171,10 @@ summarize_df <- function(x,
 #' 2) Else, if the variable is numeric then `type` is set to "cont".
 #' 3) Else, `type` is set to "cat".
 #'
+#' Factors are always defined to be categorical, using the labels of the factor
+#' as the category names. Any unused factor level is also included in the
+#' descriptive summary.
+#'
 #' @param x Input data.frame.
 #' @param var String. Name of variable in `x` to summarize.
 #' @param type String. Variable type of `var`: "bin" (binary),
@@ -298,6 +303,10 @@ summarize_df <- function(x,
 
   ### Process input ###
 
+  # Record if variable is a factor and save level ordering
+  var_is_factor <- is.factor(x$var)
+  var_level_order <- levels(x$var)
+
   # Standardize variable names
   dt  <- data.table::as.data.table(x)
   setnames(dt, var, ".var")
@@ -421,8 +430,6 @@ summarize_df <- function(x,
   )
   setcolorder(dt_summary, col_order)
 
-  dt_summary <- dt_summary[order(.by, .var_level)]
-
   # For binary variables we only keep the line corresponding to the
   # "1"/"TRUE" category.
   if (type == "bin") {
@@ -430,7 +437,53 @@ summarize_df <- function(x,
     dt_summary$.var_level <- ""
   }
 
-  dt_summary[]
+
+  # For factors we add any unused levels in each .by strata, and then reorder
+  # the categories according to the original levels attribute of `var`.
+  if (var_is_factor) {
+    tmp <- data.table::copy(dt_summary)
+    by_strata <- unique(tmp$.by)
+    for (i in seq_along(by_strata)) {
+      i_by <- by_strata[i]
+      i_tmp <- tmp[.by == i_by]
+      for (j in seq_along(var_level_order)) {
+        j_level <- var_level_order[j]
+        if (!j_level %in% i_tmp$.var_level) {
+          add_rows <- unique(i_tmp[, c(".var_name", ".var_type", ".by")])
+          add_rows[, `:=`(
+            .n_by_level = 0L,
+            .var_level = j_level,
+            .n_var_level = 0L,
+            .sum = NA_integer_,
+            .stddev = NA_real_,
+            .p25 = NA_real_,
+            .p50 = NA_real_,
+            .p75 = NA_real_
+          )]
+          i_tmp <- rbindlist(list(i_tmp, add_rows))
+        }
+      }
+      # Rebuild dt_summary strata by strata
+      if (i == 1L) {
+        dt_summary <- i_tmp
+      } else {
+        dt_summary <- rbindlist(list(dt_summary, i_tmp))
+      }
+    }
+
+    # Reorder category levels in table
+    dt_summary <- dt_summary[
+      , .var_level_order := match(.var_level, var_level_order)
+    ][
+      order(.by, .var_level_order)
+    ][
+      , .var_level_order := NULL
+    ]
+    return(dt_summary)
+  } else {
+    return(dt_summary[order(.by, .var_level)][])
+  }
+
 }
 
 

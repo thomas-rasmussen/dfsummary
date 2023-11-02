@@ -112,3 +112,75 @@ test_that(".summarize_var() `by` argument works as intended", {
 
   expect_error(dt <- .summarize_var(x, "var", by = "by"), NA)
 })
+
+test_that(".summarize_var() aggregates factors correctly", {
+  x <- data.frame(
+    var = factor(c(1, 1, 2), levels = c(1, 2), labels = c("level_1", "level_2"))
+  )
+  dt <- .summarize_var(x, "var")
+  expect_true(all(
+    identical(dt$.var_level, c("level_1", "level_2"))
+    & identical(dt$.n_var_level, c(2L, 1L))
+  ))
+})
+
+
+test_that(".sumarize_var() sorts factors correctly", {
+  # Test ordering of factor levels is preserved
+  x <- data.frame(
+    var = factor(
+      c(1, 2, 3),
+      levels = c(2, 3, 1),
+      labels = c("level_2", "level_3", "level_1")
+    )
+  )
+  dt <- .summarize_var(x, "var")
+  expect_true(all(
+    identical(dt$.var_level, c("level_2", "level_3", "level_1"))
+    & identical(dt$.n_var_level, c(1L, 1L, 1L))
+  ))
+
+})
+
+test_that(".summarize_var() adds unused factor levels", {
+
+  # No .by strata
+  x <- data.frame(
+    var = factor(c(1, 2), levels = c(1, 2, 3), labels = c("level_1", "level_2", "level_3"))
+  )
+  dt <- .summarize_var(x, "var")
+  expect_true(all(
+    identical(dt$.var_level, c("level_1", "level_2", "level_3"))
+    & identical(dt$.n_var_level, c(1L, 1L, 0L))
+  ))
+
+  # .by strata - level missing from both strata
+  x <- data.frame(
+    var = factor(1, levels = c(1, 2), labels = c("level_1", "level_2"))
+  )
+  x <- rbindlist(list(x, x), idcol = "by")
+  dt <- .summarize_var(x, "var", by = "by")
+  expect_true(all(
+    identical(dt$.var_level, rep(c("level_1", "level_2"), 3))
+    & identical(dt$.n_var_level, c(2L, 0L, 1L, 0L, 1L, 0L))
+  ))
+
+  # .by strata - level missing for only one .by strata
+  x <- data.frame(
+    var = factor(1, levels = c(1, 2), labels = c("level_1", "level_2"))
+  )
+  x <- rbindlist(list(
+      x,
+      data.frame(var = factor(1:2, levels = c(1, 2), labels = c("level_1", "level_2")))
+    ),
+    idcol = "by"
+  )
+  dt <- .summarize_var(x, "var", by = "by")
+  expect_true(all(
+    identical(dt$.by, rep(c(".all", "1", "2"), each = 2))
+    & identical(dt$.var_level, rep(c("level_1", "level_2"), 3))
+    & identical(dt$.n_var_level, c(2L, 1L, 1L, 0L, 1L, 1L))
+  ))
+
+
+})

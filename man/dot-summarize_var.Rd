@@ -66,6 +66,10 @@ vector with zero and one's, then \code{type} is set to "bin".
 \item Else, if the variable is numeric then \code{type} is set to "cont".
 \item Else, \code{type} is set to "cat".
 }
+
+Factors are always defined to be categorical, using the labels of the factor
+as the category names. Any unused factor level is also included in the
+descriptive summary.
 }
 \examples{
 \dontrun{
