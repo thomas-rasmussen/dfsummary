@@ -13,11 +13,11 @@ test_that("basic use of tbl_summary works", {
 
   expect_true(all(
     all(dt$.by == rep(".all", 5L)) &
-    all(dt$.var_name == c(".n", "var_bin", "var_cat", "var_cat", "var_cont")) &
-    all(dt$.var_type == c("n", "bin", "cat", "cat", "cont")) &
-    all(dt$.var_level == c("", "", "1", "2", "")) &
-    all(dt$.stat_label == c("n", "n_pct", "n_pct", "n_pct", "median_p25_p75")) &
-    all(dt$.stat_value == c("10", "5 (50.0%)", "5 (50.0%)", "5 (50.0%)", "5.5 (3.0;8.0)"))
+    all(dt$.var_name == c(".n", "var_cont", "var_bin", "var_cat", "var_cat")) &
+    all(dt$.var_type == c("n", "cont", "bin", "cat", "cat")) &
+    all(dt$.var_level == c("", "", "", "1", "2")) &
+    all(dt$.stat_label == c("n", "median_p25_p75", "n_pct", "n_pct", "n_pct")) &
+    all(dt$.stat_value == c("10", "5.5 (3.0;8.0)", "5 (50.0%)", "5 (50.0%)", "5 (50.0%)"))
   ))
 })
 

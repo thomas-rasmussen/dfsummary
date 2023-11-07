@@ -94,15 +94,17 @@ summarize_df <- function(x,
       by_total_val = by_total_val
     )
 
+    tmp[, .var_order := i]
+
     if (i == 1L) {
       out <- tmp
     } else {
-      out <- rbindlist(list(out, tmp))
+      out <- data.table::rbindlist(list(out, tmp))
     }
   }
 
   data.table::setcolorder(out, ".by")
-  out[order(.by, .var_name, .var_level)]
+  out[order(.by, .var_order)][, .var_order := NULL]
 }
 
 
