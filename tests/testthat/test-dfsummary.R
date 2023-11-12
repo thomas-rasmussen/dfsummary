@@ -1,4 +1,4 @@
-test_that("basic use of tbl_summary works", {
+test_that("basic use of dfsummary works", {
 
   x <- data.frame(
     var_cont = 1:10,
@@ -6,7 +6,7 @@ test_that("basic use of tbl_summary works", {
     var_cat = c(rep(1, 5), rep(2, 5))
   )
 
-  dt <- tbl_summary(
+  dt <- dfsummary(
     x = x,
     vars = c("var_cont", "var_bin", cat = "var_cat"),
   )
@@ -25,7 +25,7 @@ test_that("use of by-variable works as intended", {
   x <- data.frame(var_bin = c(rep(1, 5), rep(0, 5)))
   x <- rbindlist(list(x, x))
   x$by_var <- c(rep("A", 10L), rep("B", 10L))
-  dt <- tbl_summary(
+  dt <- dfsummary(
     x = x,
     vars = "var_bin",
     by = "by_var"
@@ -49,7 +49,7 @@ test_that("masking works as intended", {
       var = rep(c(0,1), times = 50),
       by = c(rep("A", 5), rep("B", 5), rep("C", 90))
     )
-    dt <- tbl_summary(
+    dt <- dfsummary(
       x = x,
       vars = c("var"),
       by = "by",
@@ -70,7 +70,7 @@ test_that("masking works as intended", {
     ))
 })
 
-test_that("tbl_summary performance tests", {
+test_that("dfsummary performance tests", {
   skip("Only run performance tests manually")
 
   # Just an informal performance test to get an idea of how efficient the code
@@ -83,7 +83,7 @@ test_that("tbl_summary performance tests", {
     by = sample(c("grp1", "grp2"), size = n, replace = TRUE)
   )
   Sys.time()
-  dt <- tbl_summary(x, vars = c("var_cont", "var_bin", "var_cat"), by = "by")
+  dt <- dfsummary(x, vars = c("var_cont", "var_bin", "var_cat"), by = "by")
   Sys.time()
   # 8s on private gaming laptop. Definitely acceptable performance.
 })

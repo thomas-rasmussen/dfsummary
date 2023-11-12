@@ -53,11 +53,11 @@ utils::globalVariables(c(
 #'   var_cat = c(rep(1, 5), rep(2, 5))
 #' )
 #'
-#' dt <- tbl_summary(
+#' dt <- dfsummary(
 #'   x = x,
 #'   vars = c("var_cont", "var_bin", cat = "var_cat"),
 #' )
-tbl_summary <- function(x,
+dfsummary <- function(x,
                         vars,
                         weight = NULL,
                         by = NULL,
@@ -76,7 +76,7 @@ tbl_summary <- function(x,
   x1 <- data.table::as.data.table(x)[, .n := 1L]
   vars <- c(".n", vars)
 
-  dt <- summarize_df(
+  dt <- df_summarize(
     x1,
     vars = vars,
     weight = weight,
@@ -86,7 +86,7 @@ tbl_summary <- function(x,
 
   ### Add masking indicators ###
   if (mask) {
-    dt <- mask_tbl(dt)
+    dt <- df_mask(dt)
   } else {
     dt[, `:=`(.mask_var_level = 0L, .mask_by_level = 0L)]
   }

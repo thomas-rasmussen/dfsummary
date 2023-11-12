@@ -20,9 +20,9 @@ utils::globalVariables(c(
 #'     var = c("A", "B", "B", rep("C", 5L))
 #'   )
 #'   tbl1 <- summarize_df(x, var = "var")
-#'   tbl2 <- mask_tbl(tbl1)
+#'   tbl2 <- df_mask(tbl1)
 #' }
- mask_tbl <- function(x) {
+df_mask <- function(x) {
 
 # Take as input, output from summarize_df (rename to summarize_tbl?). There
 # needs to be some sort of input check to see if the input data.frame has the

@@ -1,16 +1,16 @@
-#### mask_tbl ####
+#### df_mask ####
 
-test_that("mask_tbl() primary supression on variable level works", {
+test_that("df_mask() primary supression on variable level works", {
     x <- data.frame(
     var = c("A", "B", "B", rep("C", 5L))
   )
-  tbl1 <- summarize_df(x, var = "var")
-  tbl2 <- mask_tbl(tbl1)
+  tbl1 <- df_summarize(x, var = "var")
+  tbl2 <- df_mask(tbl1)
 
   expect_true(all((0 < tbl2$.n_var_level & tbl2$.n_var_level < 5) == tbl2$.mask_var_level))
 })
 
-test_that("mask_tbl() secondary supression on variable level works", {
+test_that("df_mask() secondary supression on variable level works", {
   x_a <- data.frame(
     var = c("A", "B", "B", rep("C", 5L)),
     by = "A"
@@ -20,8 +20,8 @@ test_that("mask_tbl() secondary supression on variable level works", {
     by = "B"
   )
   x <- rbind(x_a, x_b)
-  tbl1 <- summarize_df(x, var = "var", by = "by")
-  tbl2 <- mask_tbl(tbl1)
+  tbl1 <- df_summarize(x, var = "var", by = "by")
+  tbl2 <- df_mask(tbl1)
 
   # Table (formatted) before masking
   # group all   A   B
@@ -43,7 +43,7 @@ test_that("mask_tbl() secondary supression on variable level works", {
   )
 })
 
-test_that("mask_tbl() masking on by level works", {
+test_that("df_mask() masking on by level works", {
   x_a <- data.frame(
     var = c("A", rep("B", 5L)),
     by = "A"
@@ -53,8 +53,8 @@ test_that("mask_tbl() masking on by level works", {
     by = "B"
   )
   x <- rbind(x_a, x_b)
-  tbl1 <- summarize_df(x, var = "var", by = "by")
-  tbl2 <- mask_tbl(tbl1)
+  tbl1 <- df_summarize(x, var = "var", by = "by")
+  tbl2 <- df_mask(tbl1)
 
   # Table (formatted) before masking
   # group all   A   B
@@ -82,8 +82,8 @@ test_that("mask_tbl() masking on by level works", {
     by = "B"
   )
   x <- rbind(x_a, x_b)
-  x <- summarize_df(x, var = "var", by = "by")
-  tbl2 <- mask_tbl(x)
+  x <- df_summarize(x, var = "var", by = "by")
+  tbl2 <- df_mask(x)
   # Table (formatted) before masking
   # group all   A   B
   # n      11   3   8
@@ -108,8 +108,8 @@ test_that("mask_tbl() masking on by level works", {
       var = c(rep(c("A", "B"), times = 2)),
       by = rep(c("C", "D"), each = 2)
   )
-  x <- summarize_df(x, var = "var", by = "by")
-  tbl2 <- mask_tbl(x)
+  x <- df_summarize(x, var = "var", by = "by")
+  tbl2 <- df_mask(x)
   # Table (formatted) before masking
   # group all   C   D
   # n      4   2   2

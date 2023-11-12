@@ -1,6 +1,6 @@
-#### summarize_df ####
+#### df_summarize ####
 
-test_that("summary_df() signals error if input is invalid", {
+test_that("df_summarize() signals error if input is invalid", {
   x <- data.frame(
     var_cont = 1:4,
     var_bin = c(rep(1, 2), rep(0, 2)),
@@ -8,7 +8,7 @@ test_that("summary_df() signals error if input is invalid", {
   )
 
   expect_error(
-    summarize_df(
+    df_summarize(
       x = x,
       vars = c("var_cont", "var_bin", cat = "var_cat")
     ),
@@ -16,20 +16,20 @@ test_that("summary_df() signals error if input is invalid", {
   )
 
   expect_error(
-    summarize_df(
+    df_summarize(
       x = x,
       vars = c(bin = "var_cont", "var_bin", "var_cat")
     )
   )
 })
 
-test_that("summarize_df() preserves variable order", {
+test_that("df_summarize() preserves variable order", {
   x <- data.frame(
     var_cont = 1:4,
     var_bin = c(rep(1, 2), rep(0, 2)),
     var_cat = c(rep(1, 2), rep(2, 2))
   )
-  dt <-     summarize_df(
+  dt <-     df_summarize(
     x = x,
     vars = c("var_cont", "var_bin", cat = "var_cat")
   )

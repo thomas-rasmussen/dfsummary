@@ -50,10 +50,10 @@ pop <-data.frame(
 pop
 ```
 
-Now lets summarize the data using the `tbl_summary` function from the package.
+Now lets summarize the data using the `dfsummary` function from the package.
 
 ```{r}
-summarized_pop <- tbl_summary(
+summarized_pop <- dfsummary(
   x = pop,
   vars = c("cat_var", "bin_var", "cont_var"),
   by = "exposure"
@@ -86,7 +86,7 @@ counts can be automatically masked using the `mask` argument.
 
 ```{r}
 pop |>
-  tbl_summary(
+  dfsummary(
     vars = c("cat_var", "bin_var", "cont_var"),
     by = "exposure",
     mask = TRUE

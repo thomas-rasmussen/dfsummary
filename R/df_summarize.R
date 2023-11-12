@@ -39,12 +39,12 @@ utils::globalVariables(c(
 #' @examples
 #' \dontrun{
 #'   x <- data.frame(var1 = 1:10, var2 = c(rep("A", 5), rep("B", 5)))
-#'   summarize_df(
+#'   df_summarize(
 #'    x,
 #'    vars = c(cont = "var1", "var2")
 #'   )
 #' }
-summarize_df <- function(x,
+df_summarize <- function(x,
                          vars,
                          weight = NULL,
                          by = NULL,
