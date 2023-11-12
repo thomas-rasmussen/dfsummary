@@ -170,15 +170,3 @@ test_that(".wsum() handles NA/NaN values as intended", {
   expect_equal(.wsum(x = c(1, NaN)), NaN)
 })
 
-
-#### .validate_tblsummary ####
-
-test_that(".validate_tblsummary() throws error if object is nost a tblsummary", {
-  expect_error(.validate_tblsummary(data.frame()))
-})
-
-test_that(".validate_tblsummary() does not throw error if object is a tblsummary", {
-  x <- data.frame(var = 1:10)
-  tbl <- .summarize_var(x, var = "var")
-  expect_error(.validate_tblsummary(tbl), NA)
-})

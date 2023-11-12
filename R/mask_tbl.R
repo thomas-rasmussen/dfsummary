@@ -33,7 +33,7 @@ utils::globalVariables(c(
 # .n_var_level stuff sums correctly to .n_by_level stuff?
 
 # NOTE: Name reflects probably package renaming to tblsummary
-x1 <- .validate_tblsummary(data.table::copy(x))
+x1 <- data.table::copy(x)
 
 x1[, `:=`(
     .n_var_level_old = .n_var_level,

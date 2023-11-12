@@ -345,37 +345,3 @@
   }
   sum(w*x)
 }
-
-
-#' Validates a 'tblsummary' object
-#'
-#' Validate a 'tblsummary' object. Invisibly returns `x` or throws an error.
-#' @param x Object to validate.
-#'
-#' @return invisible(`x`).
-#' @keywords: internal
-#'
-#' @examples
-#' \dontrun{
-#'   x <- data.frame(var = 1:5)
-#'   tbl <- .summarize_var(x, var = "var")
-#'   .validate.tblsummary(tbl)
-#'   .validate_tblsummary(data.frame())
-#' }
-.validate_tblsummary <- function(x) {
-
-  if(!is.data.table(x)) {
-    stop("'x' is not a data.table", call. = FALSE)
-  }
-
-  # TODO: implement checking that data.table has correct columns
-
-  # TODO: implement cheking that .n_var_level and .n_by_level sums correctly
-
-  # TODO: implement cheking thtt .by has a ".all" category. Can only be done
-  # if other functions remove by_total_val flexibility?
-
-
-
-  invisible(x)
-}
