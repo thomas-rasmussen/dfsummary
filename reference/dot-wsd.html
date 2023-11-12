@@ -84,7 +84,20 @@ be removed?</p></dd>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>The standard deviation of a length-one or zero-length vector is NA.</p>
+    <p>The standard deviation of a length-one or zero-length vector is NA.
+Formula used:
+$$sd =
+  \sqrt{
+   \frac{
+     \sum_{i = 1}^n w_i(x_i - \bar{x})^2
+   }
+   {
+     \frac{(m-1)\sum_{i = 1}^n w_i}{m}
+   }
+  }
+$$
+where \(m\) is the number of non-zero weights, and \(\bar{x}\) is the
+weighted mean of the observations.</p>
     </div>
 
     <div class="section level2">

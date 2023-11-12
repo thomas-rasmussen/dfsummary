@@ -25,6 +25,15 @@
     <loc>https://thomas-rasmussen.github.io/dfsummary/news/index.html</loc>
   </url>
   <url>
+    <loc>https://thomas-rasmussen.github.io/dfsummary/reference/df_mask.html</loc>
+  </url>
+  <url>
+    <loc>https://thomas-rasmussen.github.io/dfsummary/reference/df_summarize.html</loc>
+  </url>
+  <url>
+    <loc>https://thomas-rasmussen.github.io/dfsummary/reference/dfsummary.html</loc>
+  </url>
+  <url>
     <loc>https://thomas-rasmussen.github.io/dfsummary/reference/dot-is_binary.html</loc>
   </url>
   <url>
@@ -35,9 +44,6 @@
   </url>
   <url>
     <loc>https://thomas-rasmussen.github.io/dfsummary/reference/dot-summarize_var.html</loc>
-  </url>
-  <url>
-    <loc>https://thomas-rasmussen.github.io/dfsummary/reference/dot-validate_tblsummary.html</loc>
   </url>
   <url>
     <loc>https://thomas-rasmussen.github.io/dfsummary/reference/dot-winputcheck.html</loc>
@@ -56,14 +62,5 @@
   </url>
   <url>
     <loc>https://thomas-rasmussen.github.io/dfsummary/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://thomas-rasmussen.github.io/dfsummary/reference/mask_tbl.html</loc>
-  </url>
-  <url>
-    <loc>https://thomas-rasmussen.github.io/dfsummary/reference/summarize_df.html</loc>
-  </url>
-  <url>
-    <loc>https://thomas-rasmussen.github.io/dfsummary/reference/tbl_summary.html</loc>
   </url>
 </urlset>
