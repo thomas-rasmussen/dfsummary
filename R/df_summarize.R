@@ -1,7 +1,7 @@
 # Quiet R CMD check notes of the type "no visible binding for global variable..."
 utils::globalVariables(c(
   ".", ".var", ".weight", ".by", ".var_level", ".var_name", ".n_var_level",
-  ".var_level_order"
+  ".var_level_order", ".var_order"
 ))
 
 
