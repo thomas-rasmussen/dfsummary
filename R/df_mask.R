@@ -155,7 +155,7 @@ x4 <- x3[
 #   are protected from masking, eg NA's (probably not relevant in this package)
 #   or zeros that are known to be zeros and therefore are not valid to mask
 #   (very relevant, something we want to be able to control)
-# - x_sum is going to be obsolute, we can simply sum x since it is not going to
+# - x_sum is going to be obsolete, we can simply sum x since it is not going to
 #   be a partially masked vector anymore? Maybe remove any NA's just to make it
 #   compatible with data with true NA's?
 
