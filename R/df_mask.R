@@ -24,15 +24,6 @@ utils::globalVariables(c(
 #' }
 df_mask <- function(x) {
 
-# Take as input, output from summarize_df (rename to summarize_tbl?). There
-# needs to be some sort of input check to see if the input data.frame has the
-# right structure. Probably a good idea to make a "validation" utility function
-# that checks that a data.frame conforms with a "dfsummary table". Probably best
-# to do this as informally as possible in line with the goal not to make the
-# tabel objects "complicated". Check for correct variable names, and that
-# .n_var_level stuff sums correctly to .n_by_level stuff?
-
-# NOTE: Name reflects probably package renaming to tblsummary
 x1 <- data.table::copy(x)
 
 x1[, `:=`(
@@ -153,11 +144,21 @@ x4 <- x3[
 
 #### Helpers ####
 
- # TODO: Rename to .mask_vector and add looping to make it possible to
- # mask vector in one go.
+# TODO:
+# - Rename to something more appropriate: .flag_for_masking?
+# - Loop until nothing more is flagged for masking.
+# - Change function so that input is a vector and a corresponding
+#   vector with flags for which elements are do be flagged (so far).
+#   the function then updates the flag vector and returns that updated
+#   vector of flags
+# - Function should also be able to take a vector with flags for values that
+#   are protected from masking, eg NA's (probably not relevant in this package)
+#   or zeros that are known to be zeros and therefore are not valid to mask
+#   (very relevant, something we want to be able to control)
+# - x_sum is going to be obsolute, we can simply sum x since it is not going to
+#   be a partially masked vector anymore? Maybe remove any NA's just to make it
+#   compatible with data with true NA's?
 
-
-#' TODO
 #'
 #' @param x a
 #' @param x_sum a
