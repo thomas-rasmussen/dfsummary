@@ -22,7 +22,7 @@ utils::globalVariables(c(
 #'   tbl1 <- summarize_df(x, var = "var")
 #'   tbl2 <- df_mask(tbl1)
 #' }
-df_mask <- function(x) {
+df_mask <- function(x, max_ite = 100L, verbose = FALSE, error_on_max_ite = TRUE) {
 
   x1 <- data.table::copy(x)
 
@@ -39,8 +39,8 @@ for (i in seq_along(all_vars)) {
   i_var <- all_vars[i]
   cnt <- 0L
   cnt_no_change <- 0L
-  stop <- FALSE
-  while (!stop) {
+  continue <- TRUE
+  while (continue) {
     x2_prev_ite <- data.table::copy(x2)
 
     # Alternative between masking .n_var_level in strata of by level and var level
@@ -48,11 +48,18 @@ for (i in seq_along(all_vars)) {
       all_by_level <- unique(x2$.by)
       for (j in seq_along(all_by_level)) {
         j_by_level <- all_by_level[j]
-        new_mask_flag <- .update_mask_flags(
-          x = x2[.var_name == i_var & .by == j_by_level]$.n_var_level,
-          mask_flags = x2[.var_name == i_var & .by == j_by_level]$.n_by_level_mask_flag
-        )
+        n_var_level_ij <- x2[.var_name == i_var & .by == j_by_level]$.n_var_level
+        n_var_level_mask_flags_ij <- x2[.var_name == i_var & .by == j_by_level]$.n_var_level_mask_flag
+        new_mask_flag <- .update_mask_flags(x = n_var_level_ij, mask_flags = n_var_level_mask_flags_ij)
         x2[.var_name == i_var & .by == j_by_level]$.n_var_level_mask_flag <- new_mask_flag
+        # if (verbose) {
+        #   cat("i = ", i, " j = ", j, "\n")
+        #   cat("i_var = ", i_var, "\n")
+        #   cat("j_by_level = ", j_by_level, "\n")
+        #   cat("n_var_level_ij = ", n_var_level_ij, "\n")
+        #   cat("n_var_level_mask_flags_ij = ", n_var_level_mask_flags_ij, "\n")
+        #   cat("new_mask_flag = ", new_mask_flag, "\n")
+        # }
       }
     } else {
       all_var_level <- unique(x2$.var_level)
@@ -66,14 +73,22 @@ for (i in seq_along(all_vars)) {
       }
     }
 
-    if (identical(x2_prev_ite, x2)) {
+    if (identical(new_mask_flag, n_var_level_mask_flags_ij)) {
       cnt_no_change <- cnt_no_change + 1L
     }
     cnt <- cnt + 1L
-    if (cnt > 100L) stop <- TRUE
-    if (cnt_no_change > 2L) stop <- TRUE
+    if (cnt > max_ite) continue <- FALSE
+    if (cnt_no_change > 2L) continue <- FALSE
+
+    if (verbose) {
+      cat("cnt_no_change = ", cnt_no_change, "\n")
+    }
+    if (error_on_max_ite & cnt > max_ite) {
+      stop("max iteration reached", call. = FALSE)
+    }
   }
 }
+
 
 
 ### Ad-hoc masking of .n_by_level ###
@@ -91,11 +106,24 @@ new_mask_flag <- .update_mask_flags(
       mask_flag = tmp$.n_by_level_mask_flag
     )
 
-tmp$.n_by_level <- new_mask_flag
+tmp[, `:=`(.n_by_level_mask_flag = new_mask_flag, .n_by_level = NULL)]
+keep_cols <- c(
+  ".by",
+  ".var_name",
+  ".var_type",
+  ".n_by_level",
+  ".var_level",
+  ".n_var_level",
+  ".sum",
+  ".stddev",
+  ".p25",
+  ".p50",
+  ".p75",
+  ".n_by_level_mask_flag",
+  ".n_var_level_mask_flag"
+)
 
-x3 <- tmp[x2[, .n_by_level_mask_flag := NULL], on = ".by"]
-
-x3
+tmp[x2, ..keep_cols, on = ".by"][]
 }
 
 

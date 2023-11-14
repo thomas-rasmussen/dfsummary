@@ -4,7 +4,7 @@
 \alias{df_mask}
 \title{Mask person-sensitive counts}
 \usage{
-df_mask(x)
+df_mask(x, max_ite = 100L, verbose = FALSE, error_on_max_ite = TRUE)
 }
 \arguments{
 \item{x}{data.table.}

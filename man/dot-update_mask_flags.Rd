@@ -4,18 +4,26 @@
 \alias{.update_mask_flags}
 \title{title}
 \usage{
-.update_mask_flags(x, x_sum, min_mask = 1L, max_mask = 4L, avg_mask = 1L)
+.update_mask_flags(
+  x,
+  mask_flags = rep(FALSE, length(x)),
+  protect = rep(FALSE, length(x)),
+  mask_min = 1L,
+  mask_max = 4L,
+  mask_avg = 1L,
+  max_ite = 100L
+)
 }
 \arguments{
 \item{x}{a}
 
-\item{x_sum}{a}
+\item{mask_flags}{a}
 
-\item{min_mask}{a}
+\item{mask_min}{a}
 
-\item{max_mask}{a}
+\item{mask_max}{a}
 
-\item{avg_mask}{a}
+\item{mask_avg}{a}
 }
 \value{
 a
@@ -23,18 +31,19 @@ a
 \description{
 TODO:
 \itemize{
+\item NA's in x should be considered invaild input? There is no case where that
+makes sense? and that assumption is also used in code.
 \item Loop until nothing more is flagged for masking.
 \item Change function so that input is a vector and a corresponding
 vector with flags for which elements are do be flagged (so far).
 the function then updates the flag vector and returns that updated
 vector of flags
 \item Function should also be able to take a vector with flags for values that
-are protected from masking, eg NA's (probably not relevant in this package)
-or zeros that are known to be zeros and therefore are not valid to mask
+are protected from masking, eg zeros that are known to be zeros and therefore are not valid to mask
 (very relevant, something we want to be able to control)
-\item x_sum is going to be obsolete, we can simply sum x since it is not going to
-be a partially masked vector anymore? Maybe remove any NA's just to make it
-compatible with data with true NA's?
+\item Protect ruins things, if protected cell NEEDS to be masked, eg if count under 5?
+function will loop until max iteration reached? Abandon approach? If the protected
+cells leads to problems then function can return warning/error?
 }
 }
 \examples{

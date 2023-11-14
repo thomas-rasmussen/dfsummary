@@ -88,7 +88,7 @@ dfsummary <- function(x,
   if (mask) {
     dt <- df_mask(dt)
   } else {
-    dt[, `:=`(.mask_var_level = 0L, .mask_by_level = 0L)]
+    dt[, `:=`(.n_by_level_mask_flag = FALSE, .n_var_level_mask_flag = FALSE)]
   }
 
   ### Calculate stats ###
@@ -162,19 +162,19 @@ dfsummary <- function(x,
   # Restrict to relevant columns
   dt <- dt[
     , .(.by, .var_name, .var_type, .n_by_level, .var_level,
-        .stat_label, .stat_value, .mask_by_level, .mask_var_level,
+        .stat_label, .stat_value, .n_by_level_mask_flag, .n_var_level_mask_flag,
         .stat_num1, .stat_num2, .stat_num3)
   ]
 
   ### Mask person-sensitive statistics ###
   dt[
     , .stat_value := fifelse(
-        .mask_by_level == 1L | .mask_var_level == 1L,
+        .n_by_level_mask_flag | .n_var_level_mask_flag,
         "*",
         .stat_value
       )
     ][
-    , `:=`(.mask_by_level = NULL, .mask_var_level = NULL, .n_by_level = NULL)
+    , `:=`(.n_by_level_mask_flag = NULL, .n_var_level_mask_flag = NULL, .n_by_level = NULL)
   ]
 
   ### Remove numeric stat columns if not requested ###
