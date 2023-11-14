@@ -131,26 +131,26 @@ test_that("df_mask() masking on by level works", {
 })
 
 
-#### .mask_vector_element ####
+#### .update_mask_flags ####
 
-test_that(".mask_vector_element() handles vectors of NA's correctly", {
-  expect_identical(.mask_vector_element(NA_real_, 1), NA_real_)
+test_that(".update_mask_flags() handles vectors of NA's correctly", {
+  expect_identical(.update_mask_flags(NA_real_, 1), NA_real_)
   expect_identical(
-    .mask_vector_element(c(NA_real_, NA_real_, 2)),
+    .update_mask_flags(c(NA_real_, NA_real_, 2)),
     c(NA_real_, NA_real_, NA_real_)
   )
 })
-test_that(".mask_vector_element() primary masking works", {
+test_that(".update_mask_flags() primary masking works", {
   x <- c(1, 2, 5)
-  expect_equal(.mask_vector_element(x, x_sum = sum(x)), c(NA, 2, 5))
+  expect_equal(.update_mask_flags(x, x_sum = sum(x)), c(NA, 2, 5))
   x <- c(NA, 2, 5)
-  expect_equal(.mask_vector_element(x, x_sum = sum(x)), c(NA, NA, 5))
+  expect_equal(.update_mask_flags(x, x_sum = sum(x)), c(NA, NA, 5))
 })
 
-test_that(".mask_vector_element() secondary masking works", {
+test_that(".update_mask_flags() secondary masking works", {
   x <- c(NA, 5, 5)
-  expect_equal(.mask_vector_element(x, 11), c(NA, NA, 5))
+  expect_equal(.update_mask_flags(x, 11), c(NA, NA, 5))
   x <- c(NA, NA, 5, 5)
   x_sum <- 12
-  expect_equal(.mask_vector_element(x, x_sum), c(NA, NA, NA, 5))
+  expect_equal(.update_mask_flags(x, x_sum), c(NA, NA, NA, 5))
 })

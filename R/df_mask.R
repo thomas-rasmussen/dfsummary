@@ -47,7 +47,7 @@ for (i in seq_along(all_vars)) {
       all_by_level <- unique(x2$.by)
       for (j in seq_along(all_by_level)) {
         j_by_level <- all_by_level[j]
-        new_vector <- .mask_vector_element(
+        new_vector <- .update_mask_flags(
           x = x2[.var_name == i_var & .by == j_by_level]$.n_var_level,
           x_sum = x2[.var_name == i_var & .by == j_by_level]$.n_by_level_old[1]
         )
@@ -57,7 +57,7 @@ for (i in seq_along(all_vars)) {
       all_var_level <- unique(x2$.var_level)
       for (j in seq_along(all_var_level)) {
         j_var_level <- all_var_level[j]
-        new_vector <- .mask_vector_element(
+        new_vector <- .update_mask_flags(
           x = x2[.var_name == i_var & .var_level == j_var_level]$.n_var_level,
           x_sum = sum(x2[.var_name == i_var & .var_level == j_var_level]$.n_var_level_old)
         )
@@ -93,7 +93,7 @@ for (i in seq_along(all_vars)) {
   while (!stop) {
     tmp_prev_ite <- data.table::copy(tmp)
 
-    new_vector <- .mask_vector_element(
+    new_vector <- .update_mask_flags(
       x = tmp[.var_name == i_var & .by != ".all"]$.n_by_level,
       x_sum = tmp[.var_name == i_var & .by == ".all"]$.n_by_level_old
     )
@@ -144,21 +144,21 @@ x4 <- x3[
 
 #### Helpers ####
 
-# TODO:
-# - Rename to something more appropriate: .flag_for_masking?
-# - Loop until nothing more is flagged for masking.
-# - Change function so that input is a vector and a corresponding
-#   vector with flags for which elements are do be flagged (so far).
-#   the function then updates the flag vector and returns that updated
-#   vector of flags
-# - Function should also be able to take a vector with flags for values that
-#   are protected from masking, eg NA's (probably not relevant in this package)
-#   or zeros that are known to be zeros and therefore are not valid to mask
-#   (very relevant, something we want to be able to control)
-# - x_sum is going to be obsolete, we can simply sum x since it is not going to
-#   be a partially masked vector anymore? Maybe remove any NA's just to make it
-#   compatible with data with true NA's?
-
+#' title
+#'
+#' TODO:
+#'- Loop until nothing more is flagged for masking.
+#' - Change function so that input is a vector and a corresponding
+#'   vector with flags for which elements are do be flagged (so far).
+#'   the function then updates the flag vector and returns that updated
+#'   vector of flags
+#' - Function should also be able to take a vector with flags for values that
+#'   are protected from masking, eg NA's (probably not relevant in this package)
+#'   or zeros that are known to be zeros and therefore are not valid to mask
+#'   (very relevant, something we want to be able to control)
+#' - x_sum is going to be obsolete, we can simply sum x since it is not going to
+#'   be a partially masked vector anymore? Maybe remove any NA's just to make it
+#'   compatible with data with true NA's?
 #'
 #' @param x a
 #' @param x_sum a
@@ -171,7 +171,7 @@ x4 <- x3[
 #'
 #' @examples
 #' \dontrun{TODO}
-.mask_vector_element <- function(
+.update_mask_flags <- function(
     x,
     x_sum,
     min_mask = 1L,
