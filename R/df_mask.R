@@ -62,7 +62,7 @@ for (i in seq_along(all_vars)) {
           x = x2[.var_name == i_var & .var_level == j_var_level]$.n_var_level,
           mask_flag = x2[.var_name == i_var & .var_level == j_var_level]$.n_var_level_mask_flag
         )
-        x2[.var_name == i_var & .var_level == j_var_level]$.n_var_level <- new_mask_flag
+        x2[.var_name == i_var & .var_level == j_var_level]$.n_var_level_mask_flag <- new_mask_flag
       }
     }
 
@@ -83,63 +83,19 @@ for (i in seq_along(all_vars)) {
 # generalized. Solution right now is also super hackish, just to make current
 # unit tests pass. Not certain this is a general solution that always work.
 
-tmp <- unique(x2[, .(.var_name, .by, .n_by_level_old = .n_by_level, .n_by_level)])
-
-all_vars <- unique(tmp$.var_name)
-for (i in seq_along(all_vars)) {
-  i_var <- all_vars[i]
-  cnt <- 0L
-  cnt_no_change <- 0L
-  stop <- FALSE
-  while (!stop) {
-    tmp_prev_ite <- data.table::copy(tmp)
-
-    new_mask_flag <- .update_mask_flags(
-      x = tmp[.var_name == i_var & .by != ".all"]$.n_by_level,
-      mask_flag = tmp[.var_name == i_var & .by == ".all"]$.n_by_level_mask_flag
+tmp <- unique(x2[
+  , .(.by, .n_by_level, .n_by_level_mask_flag)
+  ])
+new_mask_flag <- .update_mask_flags(
+      x = tmp$.n_by_level,
+      mask_flag = tmp$.n_by_level_mask_flag
     )
-    tmp[.var_name == i_var & .by != ".all"]$.n_by_level <- new_mask_flag
 
-    if (identical(tmp_prev_ite, tmp)) {
-      cnt_no_change <- cnt_no_change + 1L
-    }
-    cnt <- cnt + 1L
-    if (cnt > 100L) stop <- TRUE
-    if (cnt_no_change > 2L) stop <- TRUE
-  }
-}
+tmp$.n_by_level <- new_mask_flag
 
-# Mask grand total if needed
-# Also very ad-hoc and hackish
-tmp[.by == ".all"]$.n_by_level <- fifelse(
-  tmp[.by == ".all"]$.n_by_level < 5,
-  NA_real_,
-  tmp[.by == ".all"]$.n_by_level
-)
+x3 <- tmp[x2[, .n_by_level_mask_flag := NULL], on = ".by"]
 
-
-tmp <- tmp[, .n_by_level_old := NULL]
-x2 <- x2[, .n_by_level := NULL]
-
-x3 <- tmp[x2, on = c(".by", ".var_name")]
-
-### Make masking indicators ###
-
-x4 <- x3[
-    , `:=`(
-      .mask_by_level = fifelse(is.na(.n_by_level), 1L, 0L),
-      .mask_var_level = fifelse(is.na(.n_var_level), 1L, 0L)
-    )
-  ]
-
-  x4[, `:=`(.n_by_level = NULL, .n_var_level = NULL)]
-  setnames(
-    x4,
-    c(".n_by_level_old", ".n_var_level_old"),
-    c(".n_by_level", ".n_var_level")
-  )
-
-  x4
+x3
 }
 
 

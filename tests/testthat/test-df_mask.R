@@ -7,6 +7,7 @@ test_that("df_mask() primary supression on variable level works", {
   tbl1 <- df_summarize(x, var = "var")
   tbl2 <- df_mask(tbl1)
 
+  # TODO: Update all df_mask tests and see if all tests still pass
   expect_true(all((0 < tbl2$.n_var_level & tbl2$.n_var_level < 5) == tbl2$.mask_var_level))
 })
 
