@@ -133,24 +133,30 @@ test_that("df_mask() masking on by level works", {
 
 #### .update_mask_flags ####
 
-test_that(".update_mask_flags() handles vectors of NA's correctly", {
-  expect_identical(.update_mask_flags(NA_real_, 1), NA_real_)
-  expect_identical(
-    .update_mask_flags(c(NA_real_, NA_real_, 2)),
-    c(NA_real_, NA_real_, NA_real_)
-  )
+test_that(".update_mask_flags() throws error if input is invalid", {
+  expect_error(.update_mask_flags(c(NA_real_, TRUE)))
+  expect_error(.update_mask_flags(1, mask_flags = 1))
+  expect_error(.update_mask_flags(1:2, mask_flags = c(TRUE, NA)))
+  expect_error(.update_mask_flags(1:2, mask_flags = TRUE))
+  expect_error(.update_mask_flags(1, protect = 1))
+  expect_error(.update_mask_flags(1:2, protect = c(TRUE, NA)))
+  expect_error(.update_mask_flags(1:2, protect = TRUE))
 })
+
 test_that(".update_mask_flags() primary masking works", {
-  x <- c(1, 2, 5)
-  expect_equal(.update_mask_flags(x, x_sum = sum(x)), c(NA, 2, 5))
-  x <- c(NA, 2, 5)
-  expect_equal(.update_mask_flags(x, x_sum = sum(x)), c(NA, NA, 5))
+  expect_equal(.update_mask_flags(c(1, 2, 5)), c(TRUE, TRUE, FALSE))
+  # Input is partially flagged vector
+  out <- .update_mask_flags(
+    x = c(1, 2, 5),
+    mask_flags = c(TRUE, FALSE, FALSE)
+  )
+  expect_equal(out, c(TRUE, TRUE, FALSE))
+  expect_equal(.update_mask_flags(1, TRUE), TRUE)
 })
 
 test_that(".update_mask_flags() secondary masking works", {
-  x <- c(NA, 5, 5)
-  expect_equal(.update_mask_flags(x, 11), c(NA, NA, 5))
-  x <- c(NA, NA, 5, 5)
-  x_sum <- 12
-  expect_equal(.update_mask_flags(x, x_sum), c(NA, NA, NA, 5))
+  x <- c(1, 5, 5)
+  expect_equal(.update_mask_flags(x), c(TRUE, TRUE, FALSE))
+  x <- c(1, 1, 5, 5)
+  expect_equal(.update_mask_flags(x), c(TRUE, TRUE, TRUE, FALSE))
 })
